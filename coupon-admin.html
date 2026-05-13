@@ -721,7 +721,7 @@ async function issueCoupon() {
   const token = generateToken();
 
   // coupon-use.html 은 같은 경로에 있다고 가정
-  const baseUrl = location.href.replace('coupon-admin.html', 'coupon-use.html');
+  const baseUrl = location.origin + '/coupon-use.html';
   const url = `${baseUrl}?token=${token}`;
 
   const coupon = {
