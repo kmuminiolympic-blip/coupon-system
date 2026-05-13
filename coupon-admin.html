@@ -389,7 +389,7 @@
       <div class="stat-num" id="stat1">-</div>
     </div>
     <div class="stat-card v3">
-      <div class="stat-label"><span class="v-dot v3"></span>해피플</div>
+      <div class="stat-label"><span class="v-dot v3"></span>해방피플클럽</div>
       <div class="stat-num" id="stat2">-</div>
     </div>
     <div class="stat-card v4">
@@ -422,7 +422,7 @@
     <button class="tab active" onclick="switchTab('all', this)">전체</button>
     <button class="tab" onclick="switchTab('풍동', this)"><span class="v-dot v1"></span> 풍동</button>
     <button class="tab" onclick="switchTab('닭동가리', this)"><span class="v-dot v2"></span> 닭동가리</button>
-    <button class="tab" onclick="switchTab('해피플', this)"><span class="v-dot v3"></span> 해피플</button>
+    <button class="tab" onclick="switchTab('해방피플클럽', this)"><span class="v-dot v3"></span> 해방피플클럽</button>
     <button class="tab" onclick="switchTab('수기소금', this)"><span class="v-dot v4"></span> 수기소금</button>
     <button class="tab" onclick="switchTab('눈을 담다', this)"><span class="v-dot v5"></span> 눈을 담다</button>
   </div>
@@ -460,7 +460,7 @@
           <option value="">-- 업체 선택 --</option>
           <option value="풍동">풍동</option>
           <option value="닭동가리">닭동가리</option>
-          <option value="해피플">해피플</option>
+          <option value="해방피플클럽">해방피플클럽</option>
           <option value="수기소금">수기소금</option>
           <option value="눈을 담다">눈을 담다</option>
         </select>
@@ -577,7 +577,7 @@ const VENDORS = {
     color: '#10b981',
     types: [{ name: '음료증정', limit: null }]
   },
-  '해피플': {
+  '해방피플클럽': {
     color: '#3b82f6',
     types: [
       { name: '5만원 할인', limit: 1 },
@@ -599,7 +599,7 @@ const VENDORS = {
   }
 };
 
-const VENDOR_LIST = ['풍동', '닭동가리', '해피플', '수기소금', '눈을 담다'];
+const VENDOR_LIST = ['풍동', '닭동가리', '해방피플클럽', '수기소금', '눈을 담다'];
 
 let coupons = [];
 let currentTab = 'all';
@@ -819,7 +819,7 @@ function renderTable() {
     return;
   }
 
-  const vendorColors = { '풍동':'v1', '닭동가리':'v2', '해피플':'v3', '수기소금':'v4', '눈을 담다':'v5' };
+  const vendorColors = { '풍동':'v1', '닭동가리':'v2', '해방피플클럽':'v3', '수기소금':'v4', '눈을 담다':'v5' };
 
   tbody.innerHTML = filtered.map(c => {
     const vClass = vendorColors[c.vendor] || '';
@@ -856,7 +856,7 @@ function switchTab(tab, el) {
   currentTab = tab;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  const titles = { all:'전체 쿠폰 내역', '풍동':'풍동 쿠폰', '닭동가리':'닭동가리 쿠폰', '해피플':'해피플 쿠폰', '수기소금':'수기소금 쿠폰', '눈을 담다':'눈을 담다 쿠폰' };
+  const titles = { all:'전체 쿠폰 내역', '풍동':'풍동 쿠폰', '닭동가리':'닭동가리 쿠폰', '해방피플클럽':'해방피플클럽 쿠폰', '수기소금':'수기소금 쿠폰', '눈을 담다':'눈을 담다 쿠폰' };
   document.getElementById('tableTitle').textContent = titles[tab];
   renderTable();
 }
