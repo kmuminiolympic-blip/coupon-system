@@ -60,17 +60,37 @@
   /* [1] 업체명 */
   .v-name { top: 30.5%; left: 19%; font-size: 1.6rem; color: #1E5F35; font-weight: bold; }
   
-  /* [1] 할인내용 (제목) - 기본 3.5rem에서 글자 수에 따라 동적 조절되도록 수정, 줄바꿈 방지 */
-  .v-type { 
+  /* [1] 할인내용 (컨베이어 벨트 움직임 전광판 틀) */
+  .v-type-container { 
+    position: absolute;
     top: 34%; 
     left: 19%; 
-    right: 19%; /* 글자가 가로로 퍼질 수 있는 최대 한계선 지정 */
-    font-size: 3.5rem; 
+    right: 19%;        /* 글자가 카드를 벗어나지 않도록 막는 한계선 */
+    height: 4.5rem;    /* 텍스트 높이 확보 */
+    overflow: hidden;  /* 영역을 벗어나는 글자는 숨김 */
+    display: flex;
+    align-items: center;
+  }
+
+  /* 실제 움직이는 텍스트 속성 */
+  .v-type { 
+    font-size: 3.2rem; /* 눈을 담다 배경에 맞춰 시인성 좋은 크기로 소폭 조정 */
     font-weight: 700; 
     color: #000; 
-    white-space: nowrap; /* 무조건 한 줄로 나오게 강제 */
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: nowrap; /* 줄바꿈 방지 */
+    display: inline-block;
+    padding-right: 50px; /* 순환할 때 글자 사이의 여백 */
+  }
+
+  /* 글자가 길 때만 서버스크립트에 의해 활성화되는 애니메이션 클래스 */
+  .marquee-active {
+    animation: marquee 10s linear infinite;
+  }
+  
+  /* 컨베이어 벨트 애니메이션 정의 */
+  @keyframes marquee {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); } /* 두 개 붙은 텍스트 중 정확히 절반만큼 이동 */
   }
   
   /* [1] 쿠폰이름 (우측 하단) */
@@ -95,8 +115,8 @@
   .status-used {
     bottom: 50.9%; 
     right: 14.2%;
-    transform: translateX(-50%); /* 가로 가운데 정렬을 위한 속성 */
-    font-size: 0.7rem;            /* 사용완료 도장은 조금 더 크게 예시 */
+    transform: translateX(-50%);
+    font-size: 0.7rem;
   }
 
   /* [4] 토큰 정보 영역 숨기기 */
@@ -191,7 +211,6 @@ function render() {
   const statusText = isUsed ? '사용완료' : '미사용';
   const statusColor = isUsed ? '#888' : '#7c3aed';
   
-  // 상태에 따라 다른 클래스를 부여합니다.
   const statusClass = isUsed ? 'status-used' : 'status-unused';
 
   document.getElementById('app').innerHTML = `
@@ -201,7 +220,10 @@ function render() {
       <div class="overlay">
         <div class="field v-name">${couponData.vendor}</div>
         <div class="field v-title">${couponData.title}</div>
-        <div class="field v-type" id="couponTypeField">${couponData.coupon_type}</div>
+        
+        <div class="v-type-container" id="couponTypeContainer">
+          <div class="v-type" id="couponTypeField">${couponData.coupon_type}</div>
+        </div>
         
         <div class="field v-status ${statusClass}" style="color: ${statusColor}">${statusText}</div>
         
@@ -219,25 +241,31 @@ function render() {
     </div>
   `;
 
-  // 글자 수 및 길이에 따라 폰트 크기를 동적으로 축소시키는 스크립트 추가
-  adjustFontSize();
+  // 글자 길이를 판단하여 무한 순환 전광판 효과 적용
+  applyMarqueeEffect();
 }
 
-function adjustFontSize() {
+function applyMarqueeEffect() {
+  const container = document.getElementById('couponTypeContainer');
   const field = document.getElementById('couponTypeField');
-  if (!field) return;
+  if (!container || !field) return;
 
-  const text = field.textContent;
-  
-  // 글자 수 기반 1차 폰트 사이즈 조정
-  if (text.length >= 25) {
-    field.style.fontSize = '1.15rem'; // 아메리카노 1000원 할인... 처럼 매우 긴 경우
-    field.style.top = '36%';          // 살짝 아래로 정렬 보정
-  } else if (text.length >= 10) {
-    field.style.fontSize = '2.0rem';  // 크림치즈 크래커 1개 등 적당히 긴 경우
-    field.style.top = '35%';          // Y축 중심 정렬 보정
-  } else if (text.length >= 6) {
-    field.style.fontSize = '2.8rem';  
+  // 텍스트가 컨테이너 너비보다 길어 자르는 상황인지 체크
+  if (field.offsetWidth > container.offsetWidth) {
+    // 컨베이어 벨트처럼 끊김 없이 무한 순환시키기 위해 똑같은 텍스트 구조를 뒤에 복제해 붙입니다.
+    const clone = field.cloneNode(true);
+    container.appendChild(clone);
+
+    // 애니메이션 가동 클래스 주입
+    field.classList.add('marquee-active');
+    clone.classList.add('marquee-active');
+    
+    // 만약 글자 수가 압도적으로 길다면 (예: 아메리카노 택 1 문구 등), 글씨 크기를 유연하게 약간 줄여서 회전시킵니다.
+    if (field.textContent.length >= 25) {
+      field.style.fontSize = '1.4rem';
+      clone.style.fontSize = '1.4rem';
+      container.style.top = '36%'; // 위치 보정
+    }
   }
 }
 
