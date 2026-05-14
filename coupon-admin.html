@@ -698,7 +698,6 @@ function checkPassword() {
 // INIT
 // =============================================
 window.onload = async function() {
-  // 이미 인증된 경우 바로 통과
   if (sessionStorage.getItem('admin_auth') === '1') {
     document.getElementById('pwScreen').classList.remove('show');
   } else {
@@ -714,7 +713,6 @@ window.onload = async function() {
 
   await loadCoupons();
 
-  // 30초마다 자동 새로고침
   setInterval(async () => {
     document.getElementById('headerDate').textContent = new Date().toLocaleString('ko-KR');
     await loadCoupons();
@@ -780,8 +778,9 @@ function onTypeChange() {
     countInfo.innerHTML = `발급 한도: <strong>제한 없음</strong> (발급됨: ${existing}매)`;
   }
 
+  // ✨ 수정된 부분: 업체명과 종류명을 생략하고 오직 카운팅 번호(#1, #2...)만 들어가도록 세팅
   const vendorCoupons = coupons.filter(c => c.vendor === vendor && c.coupon_type === typeData.name).length;
-  document.getElementById('couponTitle').value = `${vendor} ${typeData.name} #${vendorCoupons + 1}`;
+  document.getElementById('couponTitle').value = `#${vendorCoupons + 1}`;
 }
 
 // =============================================
@@ -814,8 +813,6 @@ async function issueCoupon() {
   }
 
   const token = generateToken();
-
-  // coupon-use.html 은 같은 경로에 있다고 가정
   const baseUrl = location.origin + '/coupon-use.html';
   const url = `${baseUrl}?token=${token}`;
 
