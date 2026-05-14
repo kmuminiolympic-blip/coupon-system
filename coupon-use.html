@@ -4,22 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>쿠폰 사용</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&family=Black+Han+Sans&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&family=Black+Han+Sans&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green:        #7a8c45;
-    --green-dark:   #4a5a28;
-    --green-light:  #e8f0d0;
-    --lavender:     #e8dff5;
-    --purple:       #8b5cf6;
-    --purple-dark:  #6d28d9;
-    --red:          #e53e3e;
-    --text-dark:    #1a1a1a;
-    --text-mid:     #555;
-    --text-light:   #999;
-    --bg:           #f0f4e8;
-    --radius-card:  28px;
-    --radius-btn:   18px;
+    --olive:        #8a9a52;   /* 상단 헤더 올리브 그린 */
+    --olive-dark:   #3d5016;   /* 짙은 초록 - 테두리, 로고 텍스트 */
+    --white:        #ffffff;
+    --lavender:     #ece6f8;   /* 하단 날짜 섹션 연보라 */
+    --purple:       #7c5ce0;   /* 버튼, 배지 보라 */
+    --purple-dark:  #5a3fbf;
+    --red:          #e03030;
+    --text-dark:    #111111;
+    --text-gray:    #666666;
+    --text-light:   #aaaaaa;
+    --bg:           #1a1a1a;   /* 페이지 배경 - 검정 (이미지처럼) */
+    --border-w:     3.5px;     /* 카드 테두리 두께 */
+    --r-top:        32px;      /* 상단 카드 모서리 */
+    --r-bot:        28px;      /* 하단 카드 모서리 */
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -32,245 +33,410 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 32px 20px;
+    padding: 40px 20px;
   }
 
-  /* 로딩 */
-  .loading-page { text-align:center; color:var(--green-dark); font-size:14px; }
+  /* ── 로딩 ── */
+  .loading-page {
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+  }
   .loading-spinner {
-    width:40px; height:40px;
-    border:3px solid var(--green-light);
-    border-top-color:var(--green);
-    border-radius:50%;
-    animation:spin 0.8s linear infinite;
-    margin:0 auto 16px;
+    width: 36px; height: 36px;
+    border: 3px solid #333;
+    border-top-color: var(--olive);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 14px;
   }
-  @keyframes spin { to { transform:rotate(360deg); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* 에러 */
+  /* ── 에러 ── */
   .error-page {
-    text-align:center; background:white;
-    border-radius:var(--radius-card);
-    padding:48px 32px; max-width:380px;
-    border:3px solid var(--green-dark);
-    box-shadow:6px 6px 0 var(--green-dark);
+    text-align: center;
+    background: #fff;
+    border-radius: var(--r-top);
+    padding: 48px 32px;
+    max-width: 360px;
+    border: var(--border-w) solid var(--olive-dark);
   }
-  .error-icon  { font-size:48px; margin-bottom:16px; }
-  .error-title { font-size:20px; font-weight:800; color:var(--text-dark); margin-bottom:8px; }
-  .error-desc  { font-size:14px; color:var(--text-mid); }
+  .error-icon  { font-size: 48px; margin-bottom: 16px; }
+  .error-title { font-size: 20px; font-weight: 800; color: var(--text-dark); margin-bottom: 8px; }
+  .error-desc  { font-size: 14px; color: var(--text-gray); }
 
-  /* 쿠폰 래퍼 */
+  /* ── 쿠폰 래퍼 ── */
   .coupon-wrapper {
-    width:100%; max-width:380px;
-    animation:fadeUp 0.4s ease both;
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;                    /* 두 카드 사이 간격은 점선 영역으로 처리 */
+    animation: fadeUp 0.35s ease both;
   }
   @keyframes fadeUp {
-    from { opacity:0; transform:translateY(24px); }
-    to   { opacity:1; transform:translateY(0); }
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* 메인 카드 */
-  .coupon-card {
-    border:3px solid var(--green-dark);
-    border-radius:var(--radius-card);
-    overflow:hidden;
-    box-shadow:6px 6px 0 var(--green-dark);
-    position:relative;
-    transition:filter 0.4s;
-  }
-  .coupon-card.used { filter:grayscale(0.4); }
-
-  /* 상단 그린 헤더 */
-  .coupon-top {
-    background:var(--green);
-    padding:24px 24px 20px;
-    position:relative;
+  /* ══════════════════════════════
+     상단 카드 (올리브 그린)
+  ══════════════════════════════ */
+  .card-top {
+    background: var(--olive);
+    border: var(--border-w) solid var(--olive-dark);
+    border-radius: var(--r-top);
+    padding: 26px 26px 22px;
+    position: relative;
+    /* 하단 border만 없애서 점선 섹션과 이어지게 */
+    border-bottom: none;
+    border-radius: var(--r-top) var(--r-top) 0 0;
   }
 
   /* 로고 행 */
   .logo-row {
-    display:flex; align-items:center; justify-content:space-between;
-    margin-bottom:18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
   }
-  .team-logo { display:flex; align-items:center; gap:8px; }
-  .team-logo-icon { width:40px; height:40px; }
-  .team-logo-text {
-    font-size:12px; font-weight:800; color:var(--green-dark);
-    letter-spacing:1.5px; text-transform:uppercase; line-height:1;
+  .squirrel-wrap {
+    width: 48px; height: 48px;
+    flex-shrink: 0;
   }
-  .vendor-logo-slot {
-    width:60px; height:60px;
-    display:flex; align-items:center; justify-content:center;
+  .squirrel-wrap svg {
+    width: 100%; height: 100%;
   }
-
-  /* 텍스트 */
-  .vendor-name-text {
-    font-size:20px; font-weight:700; color:var(--green-dark);
-    margin-bottom:4px; letter-spacing:-0.5px;
-  }
-  .coupon-type-text {
-    font-size:32px; font-weight:900; color:var(--text-dark);
-    line-height:1.15; letter-spacing:-1px; margin-bottom:10px;
-    font-family:'Black Han Sans', sans-serif;
-  }
-  .coupon-name-small {
-    text-align:right; font-size:13px; font-weight:600;
-    color:var(--green-dark); opacity:0.7;
+  .team-green-text {
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--olive-dark);
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    line-height: 1;
   }
 
-  /* 점선 구분선 */
-  .ticket-divider {
-    height:3px; background:var(--green-dark);
-    position:relative; overflow:visible;
-    display:flex; align-items:center;
-  }
-  .ticket-divider::before,
-  .ticket-divider::after {
-    content:''; position:absolute;
-    width:30px; height:30px;
-    background:var(--bg);
-    border-radius:50%;
-    border:3px solid var(--green-dark);
-    top:50%; transform:translateY(-50%); z-index:2;
-  }
-  .ticket-divider::before { left:-15px; }
-  .ticket-divider::after  { right:-15px; }
-  .ticket-divider-inner {
-    flex:1; border-top:3px dashed rgba(255,255,255,0.35);
-    margin:0 18px; position:relative; z-index:1;
+  /* 업체명 */
+  .vendor-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--olive-dark);
+    margin-bottom: 2px;
+    letter-spacing: -0.3px;
+    opacity: 0.85;
   }
 
-  /* 하단 연보라 섹션 */
-  .coupon-bottom {
-    background:var(--lavender);
-    padding:20px 24px 22px;
+  /* 쿠폰 종류 (큰 제목) */
+  .coupon-type {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--text-dark);
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    margin-bottom: 14px;
+    font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
   }
 
-  /* 날짜 + 배지 */
-  .meta-row {
-    display:flex; align-items:flex-start; justify-content:space-between;
-    margin-bottom:4px;
+  /* 쿠폰이름 (우측 하단 소문자) */
+  .coupon-name {
+    text-align: right;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--olive-dark);
+    opacity: 0.75;
+    letter-spacing: 0.2px;
   }
-  .meta-dates { display:flex; gap:28px; }
-  .meta-label {
-    font-size:11px; font-weight:700; color:var(--text-mid);
-    letter-spacing:0.5px; margin-bottom:4px;
-  }
-  .meta-value {
-    font-size:15px; font-weight:700; color:var(--text-dark);
-    letter-spacing:-0.3px;
-  }
-  .meta-value.expired-date { color:var(--red); }
 
+  /* ══════════════════════════════
+     날짜 섹션 (연보라, 상단 카드 하단부)
+     이미지에서 날짜+배지 영역은 연보라 배경이고
+     카드 내부에 박스처럼 들어있음
+  ══════════════════════════════ */
+  .date-section {
+    background: var(--olive);
+    border-left: var(--border-w) solid var(--olive-dark);
+    border-right: var(--border-w) solid var(--olive-dark);
+    padding: 0 26px 0;
+  }
+  .date-box {
+    background: var(--lavender);
+    border-radius: 18px;
+    padding: 18px 20px 16px;
+    position: relative;
+  }
+  /* 날짜 + 배지 상단 행 */
+  .date-top-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .date-labels {
+    display: flex;
+    gap: 36px;
+  }
+  .date-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-gray);
+    letter-spacing: 0.3px;
+  }
+  /* 상태 배지 */
   .status-badge {
-    background:var(--purple); color:white;
-    font-size:12px; font-weight:700;
-    padding:4px 14px; border-radius:20px;
-    white-space:nowrap; letter-spacing:0.3px;
-    box-shadow:2px 2px 0 var(--purple-dark);
+    background: var(--purple);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 16px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    margin-top: -2px;
   }
-  .status-badge.used-badge    { background:#9ca3af; box-shadow:2px 2px 0 #6b7280; }
-  .status-badge.expired-badge { background:var(--red); box-shadow:2px 2px 0 #9b1c1c; }
+  .status-badge.used-badge    { background: #9ca3af; }
+  .status-badge.expired-badge { background: var(--red); }
+  /* 날짜 값 행 */
+  .date-values {
+    display: flex;
+    gap: 36px;
+  }
+  .date-value {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.3px;
+  }
+  .date-value.red { color: var(--red); }
 
-  .used-date-row { margin-bottom:4px; }
+  /* 사용일 (사용 완료 시) */
+  .used-date-wrap {
+    margin-top: 10px;
+  }
+
+  /* ══════════════════════════════
+     점선 구분 영역
+     이미지에서 두 카드 사이에 점선이 있고
+     양쪽에 반달 노치가 있음
+  ══════════════════════════════ */
+  .divider-zone {
+    background: var(--olive);
+    border-left: var(--border-w) solid var(--olive-dark);
+    border-right: var(--border-w) solid var(--olive-dark);
+    display: flex;
+    align-items: center;
+    height: 32px;
+    position: relative;
+  }
+  /* 왼쪽 반달 */
+  .divider-zone::before {
+    content: '';
+    position: absolute;
+    left: -18px;
+    width: 32px; height: 32px;
+    background: var(--bg);
+    border-radius: 50%;
+    border: var(--border-w) solid var(--olive-dark);
+    z-index: 2;
+  }
+  /* 오른쪽 반달 */
+  .divider-zone::after {
+    content: '';
+    position: absolute;
+    right: -18px;
+    width: 32px; height: 32px;
+    background: var(--bg);
+    border-radius: 50%;
+    border: var(--border-w) solid var(--olive-dark);
+    z-index: 2;
+  }
+  .divider-line {
+    flex: 1;
+    border-top: 2.5px dashed var(--olive-dark);
+    opacity: 0.6;
+    margin: 0 18px;
+    z-index: 1;
+  }
+
+  /* ══════════════════════════════
+     하단 카드 (흰색 - 버튼 + 토큰)
+  ══════════════════════════════ */
+  .card-bot {
+    background: var(--white);
+    border: var(--border-w) solid var(--olive-dark);
+    border-top: none;
+    border-radius: 0 0 var(--r-bot) var(--r-bot);
+    padding: 16px 20px 20px;
+  }
 
   /* 버튼 */
   .btn-use {
-    width:100%;
-    background:var(--purple);
-    color:white; border:none;
-    border-radius:var(--radius-btn);
-    padding:17px;
-    font-size:18px; font-weight:800;
-    cursor:pointer;
-    font-family:'Black Han Sans', sans-serif;
-    letter-spacing:1px; margin-top:16px;
-    box-shadow:3px 3px 0 var(--purple-dark);
-    transition:transform 0.12s, box-shadow 0.12s;
-    display:flex; align-items:center; justify-content:center; gap:8px;
+    width: 100%;
+    background: var(--purple);
+    color: white;
+    border: none;
+    border-radius: 18px;
+    padding: 18px 0;
+    font-size: 20px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: filter 0.15s, transform 0.12s;
+    margin-bottom: 14px;
   }
-  .btn-use:hover  { transform:translate(-1px,-1px); box-shadow:5px 5px 0 var(--purple-dark); }
-  .btn-use:active { transform:translate(2px,2px);   box-shadow:1px 1px 0 var(--purple-dark); }
+  .btn-use:hover  { filter: brightness(1.08); transform: translateY(-1px); }
+  .btn-use:active { transform: translateY(1px); filter: brightness(0.95); }
   .btn-use.used-btn {
-    background:#d1d5db; box-shadow:3px 3px 0 #9ca3af;
-    cursor:not-allowed; pointer-events:none; color:#6b7280;
+    background: #c8c8c8;
+    color: #888;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .btn-icon-img {
+    width: 28px; height: 28px;
+    flex-shrink: 0;
   }
 
   /* 토큰 */
-  .token-strip {
-    margin-top:12px; text-align:center;
-    font-size:11px; color:var(--text-light);
-    letter-spacing:0.3px; font-family:monospace; word-break:break-all;
+  .token-text {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-light);
+    letter-spacing: 0.5px;
+    font-family: monospace;
+    word-break: break-all;
+    line-height: 1.5;
   }
 
-  /* USED 스탬프 */
+  /* ── USED 스탬프 ── */
   .used-stamp {
-    position:absolute; top:42%; left:50%;
-    transform:translate(-50%,-50%) rotate(-18deg);
-    border:5px solid rgba(100,116,139,0.55);
-    color:rgba(100,116,139,0.55);
-    border-radius:12px; padding:6px 22px;
-    font-size:42px; font-weight:900; letter-spacing:6px;
-    pointer-events:none; z-index:10;
-    font-family:'Black Han Sans', sans-serif;
-    white-space:nowrap; display:none;
+    position: absolute;
+    top: 45%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-20deg);
+    border: 4px solid rgba(80, 80, 80, 0.45);
+    color: rgba(80, 80, 80, 0.45);
+    border-radius: 10px;
+    padding: 5px 20px;
+    font-size: 44px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    pointer-events: none;
+    z-index: 20;
+    font-family: 'Black Han Sans', sans-serif;
+    white-space: nowrap;
+    display: none;
   }
-  .coupon-card.used .used-stamp { display:block; }
 
-  /* 확인 오버레이 */
-  .confirm-overlay {
-    display:none; position:fixed; inset:0;
-    background:rgba(0,0,0,0.45); z-index:1000;
-    align-items:flex-end; justify-content:center; padding:20px;
+  /* 사용완료: 카드 전체 래퍼에 .used 클래스 */
+  .coupon-wrapper.used .card-top,
+  .coupon-wrapper.used .date-section,
+  .coupon-wrapper.used .divider-zone,
+  .coupon-wrapper.used .card-bot {
+    filter: grayscale(0.35);
   }
-  .confirm-overlay.show { display:flex; }
+  .coupon-wrapper.used .used-stamp { display: block; }
+
+  /* 스탬프는 포지션 컨텍스트 필요 */
+  .coupon-stack {
+    position: relative;
+  }
+
+  /* ══════════════════════════════
+     확인 오버레이
+  ══════════════════════════════ */
+  .confirm-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 1000;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 20px;
+  }
+  .confirm-overlay.show { display: flex; }
+
   .confirm-sheet {
-    background:white; border-radius:24px 24px 20px 20px;
-    border:3px solid var(--green-dark);
-    padding:28px 24px; width:100%; max-width:380px;
-    animation:slideUp 0.22s ease;
-    box-shadow:0 -4px 0 var(--green-dark);
+    background: white;
+    border-radius: 24px 24px 20px 20px;
+    padding: 28px 24px;
+    width: 100%; max-width: 360px;
+    animation: slideUp 0.22s ease;
+    border: 2.5px solid var(--olive-dark);
   }
   @keyframes slideUp {
-    from { transform:translateY(40px); opacity:0; }
-    to   { transform:translateY(0);    opacity:1; }
+    from { transform: translateY(40px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
   }
   .confirm-warn {
-    background:#fff7ed; border:2px solid #fed7aa;
-    border-radius:12px; padding:12px 16px;
-    display:flex; align-items:center; gap:10px; margin-bottom:18px;
+    background: #fff7ed;
+    border: 1.5px solid #fed7aa;
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px;
   }
-  .warn-icon { font-size:20px; }
-  .warn-text { font-size:14px; font-weight:600; color:#92400e; line-height:1.4; }
-  .confirm-title { font-size:18px; font-weight:800; color:var(--text-dark); margin-bottom:6px; }
-  .confirm-desc  { font-size:13px; color:#6b7280; margin-bottom:22px; line-height:1.6; }
-  .confirm-btns  { display:flex; gap:10px; }
+  .warn-icon { font-size: 20px; }
+  .warn-text { font-size: 14px; font-weight: 600; color: #92400e; line-height: 1.4; }
+  .confirm-title { font-size: 18px; font-weight: 800; color: #111; margin-bottom: 6px; }
+  .confirm-desc  { font-size: 13px; color: #777; margin-bottom: 22px; line-height: 1.6; }
+  .confirm-btns  { display: flex; gap: 10px; }
   .btn-cancel {
-    flex:1; background:#f3f4f6; border:2px solid #d1d5db;
-    border-radius:12px; padding:14px;
-    font-size:14px; font-weight:700; color:#6b7280; cursor:pointer;
-    font-family:'Noto Sans KR', sans-serif; transition:background 0.15s;
+    flex: 1; background: #f3f4f6; border: 1.5px solid #ddd;
+    border-radius: 12px; padding: 14px;
+    font-size: 14px; font-weight: 700; color: #777;
+    cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+    transition: background 0.15s;
   }
-  .btn-cancel:hover { background:#e5e7eb; }
+  .btn-cancel:hover { background: #e8e8e8; }
   .btn-confirm-use {
-    flex:2; background:var(--purple); color:white; border:none;
-    border-radius:12px; padding:14px;
-    font-size:15px; font-weight:800; cursor:pointer;
-    font-family:'Noto Sans KR', sans-serif;
-    box-shadow:3px 3px 0 var(--purple-dark); transition:all 0.12s;
+    flex: 2; background: var(--purple); color: white; border: none;
+    border-radius: 12px; padding: 14px;
+    font-size: 15px; font-weight: 800; cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: opacity 0.15s;
   }
-  .btn-confirm-use:hover    { opacity:0.9; }
-  .btn-confirm-use:disabled { opacity:0.6; cursor:not-allowed; }
+  .btn-confirm-use:hover    { opacity: 0.9; }
+  .btn-confirm-use:disabled { opacity: 0.55; cursor: not-allowed; }
 
   /* 업체별 헤더 색상 오버라이드 */
-  .vendor-풍동         .coupon-top { background:#c8a86b; }
-  .vendor-풍동         .vendor-name-text, .vendor-풍동 .team-logo-text { color:#5a3a10; }
-  .vendor-해방피플클럽 .coupon-top { background:#6b8fc4; }
-  .vendor-해방피플클럽 .vendor-name-text, .vendor-해방피플클럽 .team-logo-text { color:#1e3a6e; }
-  .vendor-수기소금     .coupon-top { background:#c47070; }
-  .vendor-수기소금     .vendor-name-text, .vendor-수기소금 .team-logo-text { color:#5a1010; }
-  .vendor-눈을담다     .coupon-top { background:#8b7cc4; }
-  .vendor-눈을담다     .vendor-name-text, .vendor-눈을담다 .team-logo-text { color:#2d1f5e; }
+  .vendor-풍동         .card-top,
+  .vendor-풍동         .date-section,
+  .vendor-풍동         .divider-zone { background: #c8a35a; }
+  .vendor-풍동         .card-top     { border-color: #7a5010; }
+  .vendor-풍동         .date-section { border-color: #7a5010; }
+  .vendor-풍동         .divider-zone { border-color: #7a5010; }
+  .vendor-풍동         .team-green-text,
+  .vendor-풍동         .vendor-name  { color: #5a3010; }
+
+  .vendor-해방피플클럽 .card-top,
+  .vendor-해방피플클럽 .date-section,
+  .vendor-해방피플클럽 .divider-zone { background: #6080c0; }
+  .vendor-해방피플클럽 .card-top     { border-color: #1e3a6e; }
+  .vendor-해방피플클럽 .date-section { border-color: #1e3a6e; }
+  .vendor-해방피플클럽 .divider-zone { border-color: #1e3a6e; }
+  .vendor-해방피플클럽 .team-green-text,
+  .vendor-해방피플클럽 .vendor-name  { color: #1e3a6e; }
+
+  .vendor-수기소금 .card-top,
+  .vendor-수기소금 .date-section,
+  .vendor-수기소금 .divider-zone { background: #c06060; }
+  .vendor-수기소금 .card-top     { border-color: #5a1010; }
+  .vendor-수기소금 .date-section { border-color: #5a1010; }
+  .vendor-수기소금 .divider-zone { border-color: #5a1010; }
+  .vendor-수기소금 .team-green-text,
+  .vendor-수기소금 .vendor-name  { color: #5a1010; }
+
+  .vendor-눈을담다 .card-top,
+  .vendor-눈을담다 .date-section,
+  .vendor-눈을담다 .divider-zone { background: #8070c0; }
+  .vendor-눈을담다 .card-top     { border-color: #2d1f5e; }
+  .vendor-눈을담다 .date-section { border-color: #2d1f5e; }
+  .vendor-눈을담다 .divider-zone { border-color: #2d1f5e; }
+  .vendor-눈을담다 .team-green-text,
+  .vendor-눈을담다 .vendor-name  { color: #2d1f5e; }
 </style>
 </head>
 <body>
@@ -282,6 +448,7 @@
   </div>
 </div>
 
+<!-- 사용 확인 오버레이 -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-sheet">
     <div class="confirm-warn">
@@ -298,6 +465,7 @@
 </div>
 
 <script>
+/* ── Supabase ── */
 const SUPABASE_URL = 'https://scanpvkimaicpergakbe.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_CGS5dAKGRMOJwee2AsLtag_Q4zFLOVy';
 const TABLE = 'coupons';
@@ -321,47 +489,75 @@ async function sbFetch(path, options = {}) {
   return text ? JSON.parse(text) : null;
 }
 
-async function dbGetCouponByToken(token) {
-  const data = await sbFetch(`${TABLE}?token=eq.${encodeURIComponent(token)}&limit=1`);
+async function dbGetCouponByToken(tok) {
+  const data = await sbFetch(`${TABLE}?token=eq.${encodeURIComponent(tok)}&limit=1`);
   return data && data.length > 0 ? data[0] : null;
 }
 
-async function dbMarkUsed(token) {
+async function dbMarkUsed(tok) {
   const usedDate = new Date().toISOString().split('T')[0];
-  await sbFetch(`${TABLE}?token=eq.${encodeURIComponent(token)}`, {
+  await sbFetch(`${TABLE}?token=eq.${encodeURIComponent(tok)}`, {
     method: 'PATCH',
     body: JSON.stringify({ status: 'used', used_date: usedDate })
   });
   return usedDate;
 }
 
+/* ── 앱 상태 ── */
 const params = new URLSearchParams(location.search);
 const token  = params.get('token');
 let couponData = null;
 
-/* 다람쥐 SVG (Team Green 로고) */
-const squirrelSVG = `<svg class="team-logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <path d="M50 75 C35 75 22 63 22 50 C22 37 35 28 50 28 C65 28 78 37 78 50 C78 63 65 75 50 75Z" fill="#4a5a28"/>
-  <path d="M38 28 C36 18 42 10 50 10 C44 18 46 24 42 28Z" fill="#4a5a28"/>
-  <path d="M62 28 C64 18 58 10 50 10 C56 18 54 24 58 28Z" fill="#4a5a28"/>
-  <path d="M24 50 C14 46 10 36 16 28 C18 38 26 44 30 46Z" fill="#4a5a28"/>
-  <circle cx="42" cy="46" r="4" fill="white"/>
-  <circle cx="58" cy="46" r="4" fill="white"/>
-  <circle cx="43" cy="47" r="2" fill="#222"/>
-  <circle cx="59" cy="47" r="2" fill="#222"/>
-  <ellipse cx="50" cy="56" rx="8" ry="5" fill="#6b7c3a"/>
-  <rect x="44" y="68" width="12" height="10" rx="5" fill="#6b7c3a"/>
+/* 다람쥐 SVG - Team Green 로고 */
+const squirrelSVG = `
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- 꼬리 -->
+  <path d="M20 90 Q5 60 20 40 Q30 55 28 72Z" fill="#3d5016"/>
+  <!-- 몸통 -->
+  <ellipse cx="68" cy="78" rx="30" ry="26" fill="#3d5016"/>
+  <!-- 머리 -->
+  <ellipse cx="68" cy="50" rx="24" ry="22" fill="#3d5016"/>
+  <!-- 귀 왼 -->
+  <ellipse cx="52" cy="34" rx="7" ry="10" fill="#3d5016"/>
+  <!-- 귀 오 -->
+  <ellipse cx="84" cy="34" rx="7" ry="10" fill="#3d5016"/>
+  <!-- 얼굴 밝은 부분 -->
+  <ellipse cx="68" cy="56" rx="14" ry="12" fill="#5a7020"/>
+  <!-- 눈 흰자 왼 -->
+  <circle cx="61" cy="47" r="5" fill="white"/>
+  <!-- 눈 흰자 오 -->
+  <circle cx="75" cy="47" r="5" fill="white"/>
+  <!-- 눈동자 왼 -->
+  <circle cx="62" cy="48" r="2.5" fill="#111"/>
+  <!-- 눈동자 오 -->
+  <circle cx="76" cy="48" r="2.5" fill="#111"/>
+  <!-- 코 -->
+  <ellipse cx="68" cy="57" rx="3" ry="2" fill="#3d5016"/>
+  <!-- 앞발 들기 - 오른쪽 -->
+  <path d="M90 72 Q104 60 100 50 Q96 62 88 68Z" fill="#3d5016"/>
+  <!-- 앞발 끝 -->
+  <ellipse cx="100" cy="49" rx="5" ry="4" fill="#3d5016"/>
+  <!-- 뒷발 -->
+  <ellipse cx="58" cy="100" rx="10" ry="6" fill="#3d5016"/>
+  <ellipse cx="80" cy="100" rx="10" ry="6" fill="#3d5016"/>
 </svg>`;
 
+/* 쿠폰 아이콘 SVG (이미지의 노란 티켓 이모지) */
+const ticketIconSVG = `
+<svg class="btn-icon-img" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+  <rect x="2" y="7" width="24" height="14" rx="3" fill="#f59e0b"/>
+  <rect x="2" y="7" width="24" height="14" rx="3" stroke="#c07000" stroke-width="1.5" fill="none"/>
+  <line x1="10" y1="7" x2="10" y2="21" stroke="#c07000" stroke-width="1.5" stroke-dasharray="2,2"/>
+  <line x1="18" y1="7" x2="18" y2="21" stroke="#c07000" stroke-width="1.5" stroke-dasharray="2,2"/>
+  <text x="14" y="18" text-anchor="middle" font-size="9" font-weight="900" fill="#7a4800" font-family="monospace">%</text>
+</svg>`;
+
+/* ── 초기화 ── */
 async function init() {
   if (!token) { renderError('유효하지 않은 쿠폰입니다', '쿠폰 링크를 다시 확인해주세요.'); return; }
 
-  try {
-    couponData = await dbGetCouponByToken(token);
-  } catch (e) {
-    renderError('서버 연결 오류', '잠시 후 다시 시도해주세요: ' + e.message);
-    return;
-  }
+  try { couponData = await dbGetCouponByToken(token); }
+  catch (e) { renderError('서버 연결 오류', '잠시 후 다시 시도해주세요: ' + e.message); return; }
 
   if (!couponData) { renderError('쿠폰을 찾을 수 없습니다', '만료되었거나 존재하지 않는 쿠폰입니다.'); return; }
   if (couponData.status === 'deleted') { renderError('삭제된 쿠폰입니다', '이 쿠폰은 더 이상 유효하지 않습니다.'); return; }
@@ -383,67 +579,76 @@ function renderError(title, desc) {
 
 function renderCoupon(isUsed, isExpired) {
   const c = couponData;
-  const vendorClass   = 'vendor-' + c.vendor.replace(/\s/g, '');
-  const badgeClass    = isUsed ? 'status-badge used-badge' : isExpired ? 'status-badge expired-badge' : 'status-badge';
-  const badgeText     = isUsed ? '사용완료' : isExpired ? '기간만료' : '미사용';
-  const btnClass      = (isUsed || isExpired) ? 'btn-use used-btn' : 'btn-use';
-  const btnText       = isUsed ? '✓ 사용완료' : isExpired ? '기간 만료됨' : '쿠폰 사용하기';
-  const disabled      = (isUsed || isExpired) ? 'disabled' : '';
-  const expireClass   = isExpired ? 'meta-value expired-date' : 'meta-value';
-  const tokenDisplay  = c.token ? c.token.substring(0, 32) + '...' : '';
+  const vendorClass  = 'vendor-' + c.vendor.replace(/\s/g, '');
+  const badgeClass   = isUsed ? 'status-badge used-badge' : isExpired ? 'status-badge expired-badge' : 'status-badge';
+  const badgeText    = isUsed ? '사용완료' : isExpired ? '기간만료' : '미사용';
+  const btnClass     = (isUsed || isExpired) ? 'btn-use used-btn' : 'btn-use';
+  const btnText      = isUsed ? '사용 완료' : isExpired ? '기간 만료됨' : '쿠폰 사용하기';
+  const disabled     = (isUsed || isExpired) ? 'disabled' : '';
+  const expClass     = isExpired ? 'date-value red' : 'date-value';
+  const tokenDisplay = c.token ? c.token.substring(0, 40) + '...' : '';
+  const wrapperUsed  = isUsed ? 'used' : '';
 
   document.getElementById('app').innerHTML = `
-    <div class="coupon-wrapper">
-      <div class="coupon-card ${isUsed ? 'used' : ''} ${vendorClass}">
+    <div class="coupon-wrapper ${wrapperUsed} ${vendorClass}">
+      <div class="coupon-stack">
 
+        <!-- USED 스탬프 -->
         <div class="used-stamp">USED</div>
 
-        <!-- 상단 그린 헤더 -->
-        <div class="coupon-top">
+        <!-- ① 상단 카드 (올리브 그린) -->
+        <div class="card-top">
+          <!-- 로고 행 -->
           <div class="logo-row">
-            <div class="team-logo">
-              ${squirrelSVG}
-              <div class="team-logo-text">TEAM GREEN</div>
-            </div>
-            <div class="vendor-logo-slot">
-              ${c.vendor_image ? `<img src="${c.vendor_image}" alt="${c.vendor}" style="width:100%;height:100%;object-fit:contain;">` : ''}
-            </div>
+            <div class="squirrel-wrap">${squirrelSVG}</div>
+            <div class="team-green-text">TEAM GREEN</div>
           </div>
-          <div class="vendor-name-text">${c.vendor}</div>
-          <div class="coupon-type-text">${c.coupon_type || c.title}</div>
-          <div class="coupon-name-small">${c.title}</div>
+
+          <!-- 업체명 -->
+          <div class="vendor-name">${c.vendor}</div>
+
+          <!-- 쿠폰 종류 -->
+          <div class="coupon-type">${c.coupon_type || c.title}</div>
+
+          <!-- 쿠폰이름 -->
+          <div class="coupon-name">${c.title}</div>
         </div>
 
-        <!-- 티켓 점선 구분선 -->
-        <div class="ticket-divider"><div class="ticket-divider-inner"></div></div>
-
-        <!-- 하단 연보라 섹션 -->
-        <div class="coupon-bottom">
-          <div class="meta-row">
-            <div class="meta-dates">
-              <div class="meta-item">
-                <div class="meta-label">발급일</div>
-                <div class="meta-value">${c.issued_date || '-'}</div>
+        <!-- ② 날짜 섹션 (올리브 배경 안의 연보라 박스) -->
+        <div class="date-section">
+          <div class="date-box">
+            <div class="date-top-row">
+              <div class="date-labels">
+                <div class="date-label">발급일</div>
+                <div class="date-label">만료일</div>
               </div>
-              <div class="meta-item">
-                <div class="meta-label">만료일</div>
-                <div class="${expireClass}">${c.expire_date || '-'}</div>
-              </div>
+              <div class="${badgeClass}">${badgeText}</div>
             </div>
-            <div class="${badgeClass}">${badgeText}</div>
+            <div class="date-values">
+              <div class="date-value">${c.issued_date || '-'}</div>
+              <div class="${expClass}">${c.expire_date || '-'}</div>
+            </div>
+            ${isUsed ? `<div class="used-date-wrap">
+              <div class="date-label" style="margin-top:10px;">사용일</div>
+              <div class="date-value">${c.used_date || '-'}</div>
+            </div>` : ''}
           </div>
+        </div>
 
-          ${isUsed ? `<div class="used-date-row">
-            <div class="meta-label" style="margin-top:10px;">사용일</div>
-            <div class="meta-value">${c.used_date || '-'}</div>
-          </div>` : ''}
+        <!-- ③ 점선 구분 영역 -->
+        <div class="divider-zone">
+          <div class="divider-line"></div>
+        </div>
 
+        <!-- ④ 하단 카드 (흰색) -->
+        <div class="card-bot">
           <button class="${btnClass}" id="useBtn" onclick="requestUse()" ${disabled}>
-            🎫 ${btnText}
+            ${ticketIconSVG}
+            ${btnText}
           </button>
-
-          <div class="token-strip">${tokenDisplay}</div>
+          <div class="token-text">${tokenDisplay}</div>
         </div>
+
       </div>
     </div>`;
 }
