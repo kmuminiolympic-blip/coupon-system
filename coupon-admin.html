@@ -317,13 +317,14 @@
       <tr>
         <th style="width: 8%; text-align: center;">번호</th>
         <th style="width: 25%;">제목</th>
-        <th style="width: 37%;">종류 (혜택 명세)</th>
-        <th style="width: 18%;">상태</th>
-        <th style="width: 12%;">삭제</th>
+        <th style="width: 32%;">종류 (혜택 명세)</th>
+        <th style="width: 13%;">상태</th>
+        <th style="width: 14%;">사용일</th>
+        <th style="width: 8%;">삭제</th>
       </tr>
     </thead>
     <tbody id="couponTableBody">
-      <tr><td colspan="5" style="text-align:center; color:var(--text3); padding:30px;">데이터 연동 분석중...</td></tr>
+      <tr><td colspan="6" style="text-align:center; color:var(--text3); padding:30px;">데이터 연동 분석중...</td></tr>
     </tbody>
   </table>
 </div>
@@ -482,8 +483,8 @@ async function loadCoupons() {
 }
 
 function setDbStatus(ok) {
-  const dot = document.getElementById('dbDot'); const label = document.getElementById('dbLabel');
-  dot.className = 'db-dot ' + (ok ? 'ok' : 'err'); label.textContent = ok ? 'Supabase 클라우드 실시간 동기화 가동중' : '동기화 통신 끊김';
+  const doc = document.getElementById('dbDot'); const label = document.getElementById('dbLabel');
+  doc.className = 'db-dot ' + (ok ? 'ok' : 'err'); label.textContent = ok ? 'Supabase 클라우드 실시간 동기화 가동중' : '동기화 통신 끊김';
 }
 
 function renderAll() {
@@ -527,7 +528,7 @@ function renderTableData() {
 
   const tbody = document.getElementById('couponTableBody');
   if (pageData.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text3); padding:40px;">조회할 수 있는 현장 배포 로그가 없습니다.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text3); padding:40px;">조회할 수 있는 현장 배포 로그가 없습니다.</td></tr>`;
     return;
   }
 
@@ -537,9 +538,7 @@ function renderTableData() {
       : '<span class="status-badge status-unused">미사용</span>';
     
     const colorClass = VENDORS[c.vendor] ? VENDORS[c.vendor].colorClass : 'color-pd';
-    
-    // 데이터는 최신순(desc)이므로 전체 개수에서 차감하여 오래된 것부터 1번이 되도록 순번 계산
-    const rowNumber = dataset.length - (startIdx + index);
+    const rowNumber = startIdx + index + 1; // 10개 묶음 페이징을 고려한 고유 순번 계산
 
     return `
       <tr>
@@ -551,6 +550,7 @@ function renderTableData() {
         </td>
         <td style="font-size:12px; color:var(--text2);">${c.coupon_type}</td>
         <td>${statusHtml}</td>
+        <td><span class="mono">${c.used_date || '-'}</span></td>
         <td><button class="btn-del" onclick='deleteCoupon(${JSON.stringify(c.id)})'>파기</button></td>
       </tr>
     `;
