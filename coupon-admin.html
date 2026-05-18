@@ -242,6 +242,19 @@
     margin-bottom: 32px;
   }
 
+  /* 단축 버튼 레이아웃 스타일 */
+  .quick-vendor-box {
+    display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+    background: var(--surface2); padding: 12px; border-radius: var(--radius2);
+    border: 1px solid var(--border);
+  }
+  .btn-quick {
+    background: var(--surface3); border: 1px solid var(--border2);
+    color: var(--text); padding: 6px 14px; font-size: 12px; font-weight: 600;
+    border-radius: 6px; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-quick:hover { border-color: var(--accent2); color: var(--accent2); }
+
   .form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
 
   .form-group { display: flex; flex-direction: column; gap: 6px; }
@@ -277,6 +290,11 @@
   .btn-issue:hover { opacity: 0.9; transform: translateY(-1px); }
   .btn-issue:active { transform: translateY(0); }
   .btn-issue:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* 순환 발급 전용 오렌지색 버튼 */
+  .btn-issue-loop {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
 
   .modal-overlay {
     display: none; position: fixed; inset: 0;
@@ -362,107 +380,45 @@
   .coupon-count-info strong { color: var(--accent2); }
 
   /* 현장 배포 전용 대형 모달 레이아웃 */
-  .live-modal {
-    width: 600px;
-    max-width: 95vw;
-    text-align: center;
-  }
-  .live-header-info {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--accent2);
-    margin-bottom: 8px;
-  }
+  .live-modal { width: 600px; max-width: 95vw; text-align: center; }
+  .live-header-info { font-size: 16px; font-weight: 600; color: var(--accent2); margin-bottom: 8px; }
   .live-qr-frame {
-    background: white;
-    padding: 24px;
-    border-radius: var(--radius);
-    display: inline-block;
-    margin: 20px 0;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    background: white; padding: 24px; border-radius: var(--radius);
+    display: inline-block; margin: 20px 0; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
   }
   .live-nav-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-    background: var(--surface2);
-    padding: 12px 20px;
-    border-radius: var(--radius2);
+    display: flex; justify-content: space-between; align-items: center; margin-top: 20px;
+    background: var(--surface2); padding: 12px 20px; border-radius: var(--radius2);
   }
   .btn-nav {
-    background: var(--surface3);
-    border: 1px solid var(--border2);
-    color: var(--text);
-    padding: 10px 20px;
-    border-radius: var(--radius2);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
+    background: var(--surface3); border: 1px solid var(--border2); color: var(--text);
+    padding: 10px 20px; border-radius: var(--radius2); font-weight: 600; cursor: pointer; transition: all 0.15s;
   }
   .btn-nav:hover:not(:disabled) { background: var(--accent); color: white; }
   .btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
-  .live-counter {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 16px;
-    font-weight: 700;
-  }
+  .live-counter { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; }
 
   /* PASSWORD SCREEN */
   .pw-screen {
-    display: none;
-    position: fixed; inset: 0;
-    background: var(--bg);
-    z-index: 9999;
+    display: none; position: fixed; inset: 0; background: var(--bg); z-index: 9999;
     align-items: center; justify-content: center;
   }
   .pw-screen.show { display: flex; }
-  .pw-box {
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius);
-    padding: 40px 36px;
-    width: 340px;
-    text-align: center;
-  }
+  .pw-box { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 40px 36px; width: 340px; text-align: center; }
   .pw-icon { font-size: 32px; margin-bottom: 16px; }
   .pw-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
   .pw-sub { font-size: 12px; color: var(--text3); margin-bottom: 24px; }
   .pw-input {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius2);
-    color: var(--text);
-    padding: 12px 16px;
-    font-size: 16px;
-    font-family: 'JetBrains Mono', monospace;
-    outline: none;
-    text-align: center;
-    letter-spacing: 4px;
-    transition: border-color 0.15s;
-    margin-bottom: 12px;
+    width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius2);
+    color: var(--text); padding: 12px 16px; font-size: 16px; font-family: 'JetBrains Mono', monospace;
+    outline: none; text-align: center; letter-spacing: 4px; transition: border-color 0.15s; margin-bottom: 12px;
   }
   .pw-input:focus { border-color: var(--accent); }
   .pw-input.error { border-color: var(--coral); animation: shake 0.3s ease; }
   .pw-error { font-size: 12px; color: var(--coral); height: 16px; margin-bottom: 12px; }
-  .pw-btn {
-    width: 100%;
-    background: linear-gradient(135deg, var(--accent), #9f7aea);
-    color: white; border: none;
-    border-radius: var(--radius2);
-    padding: 12px;
-    font-size: 14px; font-weight: 600;
-    cursor: pointer;
-    font-family: 'Noto Sans KR', sans-serif;
-    transition: opacity 0.15s;
-  }
+  .pw-btn { width: 100%; background: linear-gradient(135deg, var(--accent), #9f7aea); color: white; border: none; border-radius: var(--radius2); padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: opacity 0.15s; }
   .pw-btn:hover { opacity: 0.9; }
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-6px); }
-    75% { transform: translateX(6px); }
-  }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 </style>
 </head>
 <body>
@@ -472,8 +428,7 @@
     <div class="pw-icon">🔐</div>
     <div class="pw-title">관리자 인증</div>
     <div class="pw-sub">쿠폰 관리 시스템에 접근하려면 비밀번호를 입력하세요</div>
-    <input class="pw-input" type="password" id="pwInput" placeholder="••••••"
-      onkeydown="if(event.key==='Enter') checkPassword()">
+    <input class="pw-input" type="password" id="pwInput" placeholder="••••••" onkeydown="if(event.key==='Enter') checkPassword()">
     <div class="pw-error" id="pwError"></div>
     <button class="pw-btn" onclick="checkPassword()">확인</button>
   </div>
@@ -502,45 +457,15 @@
       <div class="stat-num" id="statTotal">-</div>
       <div class="stat-sub">누적 발행 쿠폰</div>
     </div>
-    <div class="stat-card v1">
-      <div class="stat-label"><span class="v-dot v1"></span>풍동</div>
-      <div class="stat-num" id="stat0">-</div>
-    </div>
-    <div class="stat-card v2">
-      <div class="stat-label"><span class="v-dot v2"></span>닭동가리</div>
-      <div class="stat-num" id="stat1">-</div>
-    </div>
-    <div class="stat-card v3">
-      <div class="stat-label"><span class="v-dot v3"></span>해방피플클럽</div>
-      <div class="stat-num" id="stat2">-</div>
-    </div>
-    <div class="stat-card v4">
-      <div class="stat-label"><span class="v-dot v4"></span>수기소금</div>
-      <div class="stat-num" id="stat3">-</div>
-    </div>
-    <div class="stat-card v5">
-      <div class="stat-label"><span class="v-dot v5"></span>눈을 담다</div>
-      <div class="stat-num" id="stat4">-</div>
-    </div>
-    <div class="stat-card v6">
-      <div class="stat-label"><span class="v-dot v6"></span>정육회</div>
-      <div class="stat-num" id="stat5">-</div>
-    </div>
-    <div class="stat-card used span1">
-      <div class="stat-label">사용 완료</div>
-      <div class="stat-num" id="statUsed">-</div>
-      <span class="stat-badge badge-teal">USED</span>
-    </div>
-    <div class="stat-card unused span1">
-      <div class="stat-label">미사용</div>
-      <div class="stat-num" id="statUnused">-</div>
-      <span class="stat-badge badge-coral">UNUSED</span>
-    </div>
-    <div class="stat-card rate span1">
-      <div class="stat-label">사용률</div>
-      <div class="stat-num" id="statRate">-%</div>
-      <span class="stat-badge badge-amber">RATE</span>
-    </div>
+    <div class="stat-card v1"><div class="stat-label"><span class="v-dot v1"></span>풍동</div><div class="stat-num" id="stat0">-</div></div>
+    <div class="stat-card v2"><div class="stat-label"><span class="v-dot v2"></span>닭동가리</div><div class="stat-num" id="stat1">-</div></div>
+    <div class="stat-card v3"><div class="stat-label"><span class="v-dot v3"></span>해방피플클럽</div><div class="stat-num" id="stat2">-</div></div>
+    <div class="stat-card v4"><div class="stat-label"><span class="v-dot v4"></span>수기소금</div><div class="stat-num" id="stat3">-</div></div>
+    <div class="stat-card v5"><div class="stat-label"><span class="v-dot v5"></span>눈을 담다</div><div class="stat-num" id="stat4">-</div></div>
+    <div class="stat-card v6"><div class="stat-label"><span class="v-dot v6"></span>정육회</div><div class="stat-num" id="stat5">-</div></div>
+    <div class="stat-card used span1"><div class="stat-label">사용 완료</div><div class="stat-num" id="statUsed">-</div><span class="stat-badge badge-teal">USED</span></div>
+    <div class="stat-card unused span1"><div class="stat-label">미사용</div><div class="stat-num" id="statUnused">-</div><span class="stat-badge badge-coral">UNUSED</span></div>
+    <div class="stat-card rate span1"><div class="stat-label">사용률</div><div class="stat-num" id="statRate">-%</div><span class="stat-badge badge-amber">RATE</span></div>
   </div>
 
   <div class="section-title">쿠폰 발급 내역</div>
@@ -554,9 +479,7 @@
       <button class="tab" onclick="switchTab('눈을 담다', this)"><span class="v-dot v5"></span> 눈을 담다</button>
       <button class="tab" onclick="switchTab('정육회', this)"><span class="v-dot v6"></span> 정육회</button>
     </div>
-    <button class="btn-live-mode" onclick="openLiveDistribution()">
-      📢 현장 배포 모드 켜기
-    </button>
+    <button class="btn-live-mode" onclick="openLiveDistribution()">📢 현장 배포 모드 켜기</button>
   </div>
 
   <div class="table-wrap">
@@ -585,6 +508,14 @@
 
   <div class="section-title">쿠폰 발행</div>
   <div class="issue-section">
+    <div class="form-label" style="margin-bottom:6px;">원할 때 바로 발급 (단축 매핑)</div>
+    <div class="quick-vendor-box">
+      <button class="btn-quick" onclick="quickSelectVendor('해방피플클럽')">🔵 해방피플클럽</button>
+      <button class="btn-quick" onclick="quickSelectVendor('수기소금')">🔴 수기소금</button>
+      <button class="btn-quick" onclick="quickSelectVendor('정육회')">🟢 정육회</button>
+      <span style="color:var(--text3); font-size:11px; align-self:center; margin-left:auto;">*풍동, 닭동가리, 눈을담다는 자동 순환 버튼 사용 권장</span>
+    </div>
+
     <div class="form-grid">
       <div class="form-group">
         <label class="form-label">업체 선택</label>
@@ -619,10 +550,12 @@
         <label class="form-label">유효기간 종료</label>
         <input class="form-input" type="date" id="endDate">
       </div>
-      <div class="form-group" style="justify-content:flex-end;">
-        <label class="form-label" style="opacity:0">발행</label>
-        <button class="btn-issue" id="issueBtn" onclick="issueCoupon()">
-          <span>🎫</span> 쿠폰 발행하기
+      <div class="form-group" style="justify-content:flex-end; gap:10px; flex-direction:row; align-items:flex-end;">
+        <button class="btn-issue" id="issueBtn" onclick="issueCoupon(false)">
+          <span>🎫</span> 단독 발행
+        </button>
+        <button class="btn-issue btn-issue-loop" id="issueLoopBtn" onclick="issueCoupon(true)">
+          <span>🔄</span> 자동 순환 발행하기
         </button>
       </div>
     </div>
@@ -648,13 +581,8 @@
     <button class="modal-close" onclick="closeLiveModal()">✕</button>
     <div class="modal-title" id="liveModalTitle">현장 쿠폰 배포 스크린</div>
     <div class="live-header-info" id="liveCouponInfo">업체를 선택해주세요</div>
-    
-    <div class="live-qr-frame">
-      <div id="liveQrContainer"></div>
-    </div>
-    
+    <div class="live-qr-frame"><div id="liveQrContainer"></div></div>
     <div class="url-box" id="liveUrlBox" style="font-size:12px; font-weight:600; color:var(--text);"></div>
-    
     <div class="live-nav-box">
       <button class="btn-nav" id="btnPrevLive" onclick="moveLiveSlide(-1)">◀ 이전 쿠폰</button>
       <div class="live-counter" id="liveCounter">0 / 0</div>
@@ -692,27 +620,12 @@ async function sbFetch(path, options = {}) {
   return text ? JSON.parse(text) : null;
 }
 
-async function dbGetCoupons() {
-  return sbFetch(`${TABLE}?status=neq.deleted&order=created_at.desc`);
-}
-
-async function dbInsertCoupon(coupon) {
-  return sbFetch(TABLE, {
-    method: 'POST',
-    prefer: 'return=representation',
-    body: JSON.stringify(coupon)
-  });
-}
-
-async function dbDeleteCoupon(id) {
-  return sbFetch(`${TABLE}?id=eq.${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify({ status: 'deleted' })
-  });
-}
+async function dbGetCoupons() { return sbFetch(`${TABLE}?status=neq.deleted&order=created_at.desc`); }
+async function dbInsertCoupon(coupon) { return sbFetch(TABLE, { method: 'POST', prefer: 'return=representation', body: JSON.stringify(coupon) }); }
+async function dbDeleteCoupon(id) { return sbFetch(`${TABLE}?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'deleted' }) }); }
 
 // =============================================
-// VENDOR DATA
+// VENDOR DATA & LOOP CONFIG
 // =============================================
 const VENDORS = {
   '풍동': { color: '#f59e0b', types: [{ name: '1,000원할인    ', limit: null }] },
@@ -725,11 +638,12 @@ const VENDORS = {
 
 const VENDOR_LIST = ['풍동', '닭동가리', '해방피플클럽', '수기소금', '눈을 담다', '정육회'];
 
+// 자동 순환 루프 순서 설정
+const LOOP_VENDORS = ['풍동', '닭동가리', '눈을 담다'];
+
 let coupons = [];
 let currentTab = 'all';
 let currentUrl = '';
-
-// 현장 배포 모드 상태 변수
 let liveActiveCoupons = [];
 let liveCurrentIdx = 0;
 
@@ -737,19 +651,16 @@ let liveCurrentIdx = 0;
 // PASSWORD
 // =============================================
 const ADMIN_PW = 'admin';
-
 function checkPassword() {
   const input = document.getElementById('pwInput');
   const error = document.getElementById('pwError');
   if (input.value === ADMIN_PW) {
     sessionStorage.setItem('admin_auth', '1');
     document.getElementById('pwScreen').classList.remove('show');
-    input.value = '';
-    error.textContent = '';
+    input.value = ''; error.textContent = '';
   } else {
     error.textContent = '비밀번호가 올바르지 않습니다';
-    input.classList.add('error');
-    input.value = '';
+    input.classList.add('error'); input.value = '';
     setTimeout(() => input.classList.remove('error'), 400);
   }
 }
@@ -773,6 +684,9 @@ window.onload = async function() {
 
   await loadCoupons();
 
+  // 기본값으로 순환 루프의 첫 주자인 '풍동' 자동 세팅
+  quickSelectVendor('풍동');
+
   setInterval(async () => {
     document.getElementById('headerDate').textContent = new Date().toLocaleString('ko-KR');
     await loadCoupons();
@@ -785,9 +699,7 @@ async function loadCoupons() {
     coupons = data || [];
     setDbStatus(true);
     renderAll();
-    if(document.getElementById('liveModal').classList.contains('show')) {
-      refreshLiveModeData();
-    }
+    if(document.getElementById('liveModal').classList.contains('show')) { refreshLiveModeData(); }
   } catch (e) {
     setDbStatus(false);
     showToast('❌ DB 연결 실패: ' + e.message);
@@ -801,6 +713,20 @@ function setDbStatus(ok) {
   label.textContent = ok ? 'Supabase 연결됨' : '연결 오류';
 }
 
+// 단축 배핑 선택용 함수
+function quickSelectVendor(vendorName) {
+  const select = document.getElementById('vendorSelect');
+  select.value = vendorName;
+  onVendorChange();
+  
+  // 첫 번째 쿠폰 종류 선택 처리
+  const typeSelect = document.getElementById('couponTypeSelect');
+  if (typeSelect.options.length > 1) {
+    typeSelect.value = "0";
+    onTypeChange();
+  }
+}
+
 function onVendorChange() {
   const vendor = document.getElementById('vendorSelect').value;
   const typeSelect = document.getElementById('couponTypeSelect');
@@ -811,8 +737,7 @@ function onVendorChange() {
   if (!vendor) return;
   VENDORS[vendor].types.forEach((t, i) => {
     const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = t.name;
+    opt.value = i; opt.textContent = t.name;
     typeSelect.appendChild(opt);
   });
 }
@@ -849,7 +774,10 @@ function generateToken() {
   return token;
 }
 
-async function issueCoupon() {
+// =============================================
+// ISSUE COUPON (isLoop 매개변수 도입)
+// =============================================
+async function issueCoupon(isLoop = false) {
   const vendor = document.getElementById('vendorSelect').value;
   const typeIdx = document.getElementById('couponTypeSelect').value;
   const title = document.getElementById('couponTitle').value.trim();
@@ -873,21 +801,15 @@ async function issueCoupon() {
   const url = `${baseUrl}?token=${token}`;
 
   const coupon = {
-    token,
-    title,
-    vendor,
-    coupon_type: typeData.name,
-    status: 'unused',
-    issued_date: new Date().toISOString().split('T')[0],
-    used_date: null,
-    start_date: startDate || null,
-    expire_date: endDate,
-    url
+    token, title, vendor, coupon_type: typeData.name, status: 'unused',
+    issued_date: new Date().toISOString().split('T')[0], used_date: null,
+    start_date: startDate || null, expire_date: endDate, url
   };
 
-  const btn = document.getElementById('issueBtn');
+  const btn = isLoop ? document.getElementById('issueLoopBtn') : document.getElementById('issueBtn');
   btn.disabled = true;
-  btn.innerHTML = '<span>⏳</span> 저장 중...';
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<span>⏳</span> 발급 중...';
 
   try {
     const result = await dbInsertCoupon(coupon);
@@ -895,239 +817,131 @@ async function issueCoupon() {
     coupons.unshift(saved || coupon);
     renderAll();
     
-    // [수정] 현장 연속 발행 편의성을 위해 개별 모달 팝업 강제를 제거하고 토스트로 대체
-    showToast(`✅ 쿠폰 [${title}] 발행 완료!`);
-    
-    // 자동 다음 번호 세팅
-    const vendorCoupons = coupons.filter(c => c.vendor === vendor && c.coupon_type === typeData.name).length;
-    document.getElementById('couponTitle').value = `#${vendorCoupons + 1}`;
-    onTypeChange();
+    showToast(`✅ [${vendor}] ${title} 발행 완료!`);
+
+    // [핵심 로직] 자동 순환 발급 참(true)일 때 순서 회전 처리
+    if (isLoop && LOOP_VENDORS.includes(vendor)) {
+      const currentIdx = LOOP_VENDORS.indexOf(vendor);
+      const nextIdx = (currentIdx + 1) % LOOP_VENDORS.length; // 다음 순서 계산 (마지막이면 처음 풍동으로)
+      const nextVendor = LOOP_VENDORS[nextIdx];
+      
+      // 다음 순서로 폼 강제 업데이트
+      setTimeout(() => { quickSelectVendor(nextVendor); }, 100);
+    } else {
+      // 일반 단독 발행일 땐 해당 업체의 다음 일련번호 가이드만 리프레시
+      const vendorCoupons = coupons.filter(c => c.vendor === vendor && c.coupon_type === typeData.name).length;
+      document.getElementById('couponTitle').value = `#${vendorCoupons + 1}`;
+      onTypeChange();
+    }
     
   } catch (e) {
     showToast('❌ 발행 실패: ' + e.message);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '<span>🎫</span> 쿠폰 발행하기';
+    btn.innerHTML = originalText;
   }
 }
 
 // =============================================
-// QR MODAL (개별 조회용)
+// QR MODAL
 // =============================================
 function showQrModal(coupon) {
   currentUrl = coupon.url;
   document.getElementById('modalTitle').textContent = `쿠폰: ${coupon.title}`;
   document.getElementById('modalUrl').textContent = coupon.url;
   document.getElementById('qrContainer').innerHTML = '';
-
   const qrDiv = document.createElement('div');
   document.getElementById('qrContainer').appendChild(qrDiv);
-  new QRCode(qrDiv, {
-    text: coupon.url,
-    width: 200, height: 200,
-    colorDark: '#0a0a0f', colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.H
-  });
-
+  new QRCode(qrDiv, { text: coupon.url, width: 200, height: 200, colorDark: '#0a0a0f', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
   document.getElementById('qrModal').classList.add('show');
 }
-
 function closeModal() { document.getElementById('qrModal').classList.remove('show'); }
 function copyUrl() { navigator.clipboard.writeText(currentUrl).then(() => showToast('URL이 복사되었습니다')); }
 function openCouponPage() { window.open(currentUrl, '_blank'); }
 
 // =============================================
-// 📢 현장 배포 모드 슬라이더 로직 (핵심 추가)
+// 📢 현장 배포 모드 슬라이더 로직
 // =============================================
 function openLiveDistribution() {
-  // 현재 탭에 지정된 업체의 쿠폰들만 오름차순(#1, #2, #3...)으로 정렬하여 필터링
-  const targetVendor = currentTab === 'all' ? '정육회' : currentTab; // 전체 탭일 경우 기본으로 정육회 설정
-  
-  // 미삭제 상태인 쿠폰 중 해당 업체 쿠폰 수집 후 발행일 순 정렬
+  const targetVendor = currentTab === 'all' ? '정육회' : currentTab;
   liveActiveCoupons = coupons
     .filter(c => c.vendor === targetVendor && c.status !== 'deleted')
     .sort((a, b) => a.title.localeCompare(b.title, undefined, {numeric: true, sensitivity: 'base'}));
 
   if (liveActiveCoupons.length === 0) {
-    showToast(`⚠ [${targetVendor}] 부스에 발행된 쿠폰 내역이 없습니다. 먼저 하단에서 쿠폰을 생성해주세요.`);
-    return;
+    showToast(`⚠ [${targetVendor}]에 발행된 쿠폰이 없습니다.`); return;
   }
-
-  liveCurrentIdx = 0; 
-  document.getElementById('liveModal').classList.add('show');
-  renderLiveSlide();
+  liveCurrentIdx = 0; document.getElementById('liveModal').classList.add('show'); renderLiveSlide();
 }
 
 function renderLiveSlide() {
   if (liveActiveCoupons.length === 0) return;
   const coupon = liveActiveCoupons[liveCurrentIdx];
-  
-  // 상단 안내 정보 매핑
-  document.getElementById('liveCouponInfo').innerHTML = `
-    <span style="font-size: 22px; color: #fff;">${coupon.vendor}</span><br>
-    <span style="font-size: 15px; color: var(--text2);">${coupon.coupon_type}</span>
-  `;
-  
+  document.getElementById('liveCouponInfo').innerHTML = `<span style="font-size: 22px; color: #fff;">${coupon.vendor}</span><br><span style="font-size: 15px; color: var(--text2);">${coupon.coupon_type}</span>`;
   document.getElementById('liveUrlBox').textContent = `현재 배포 중인 고유 번호: ${coupon.title}`;
-  
-  // QR 생성
-  const container = document.getElementById('liveQrContainer');
-  container.innerHTML = '';
-  const qrDiv = document.createElement('div');
-  container.appendChild(qrDiv);
-  new QRCode(qrDiv, {
-    text: coupon.url,
-    width: 280, height: 280, // 방문객이 멀리서도 잘 찍을 수 있게 크게 확장
-    colorDark: '#000000', colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.H
-  });
-
-  // 상태 바 카운터 업데이트
+  const container = document.getElementById('liveQrContainer'); container.innerHTML = '';
+  const qrDiv = document.createElement('div'); container.appendChild(qrDiv);
+  new QRCode(qrDiv, { text: coupon.url, width: 280, height: 280, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
   document.getElementById('liveCounter').textContent = `${liveCurrentIdx + 1} / ${liveActiveCoupons.length}`;
-  
-  // 버튼 활성/비활성화 제어
   document.getElementById('btnPrevLive').disabled = (liveCurrentIdx === 0);
   document.getElementById('btnNextLive').disabled = (liveCurrentIdx === liveActiveCoupons.length - 1);
 }
 
 function moveLiveSlide(direction) {
   const newIdx = liveCurrentIdx + direction;
-  if (newIdx >= 0 && newIdx < liveActiveCoupons.length) {
-    liveCurrentIdx = newIdx;
-    renderLiveSlide();
-  }
+  if (newIdx >= 0 && newIdx < liveActiveCoupons.length) { liveCurrentIdx = newIdx; renderLiveSlide(); }
 }
 
 function refreshLiveModeData() {
-  const currentVendor = liveActiveCoupons[0]?.vendor;
-  if(!currentVendor) return;
-  
-  liveActiveCoupons = coupons
-    .filter(c => c.vendor === currentVendor && c.status !== 'deleted')
-    .sort((a, b) => a.title.localeCompare(b.title, undefined, {numeric: true, sensitivity: 'base'}));
-    
-  if (liveCurrentIdx >= liveActiveCoupons.length) {
-    liveCurrentIdx = Math.max(0, liveActiveCoupons.length - 1);
-  }
+  const currentVendor = liveActiveCoupons[0]?.vendor; if(!currentVendor) return;
+  liveActiveCoupons = coupons.filter(c => c.vendor === currentVendor && c.status !== 'deleted').sort((a, b) => a.title.localeCompare(b.title, undefined, {numeric: true, sensitivity: 'base'}));
+  if (liveCurrentIdx >= liveActiveCoupons.length) { liveCurrentIdx = Math.max(0, liveActiveCoupons.length - 1); }
   renderLiveSlide();
 }
-
-function closeLiveModal() {
-  document.getElementById('liveModal').classList.remove('show');
-}
+function closeLiveModal() { document.getElementById('liveModal').classList.remove('show'); }
 
 // =============================================
 // RENDER (메인 화면)
 // =============================================
-function renderAll() {
-  updateStats();
-  renderTable();
-}
-
+function renderAll() { updateStats(); renderTable(); }
 function updateStats() {
   const active = coupons.filter(c => c.status !== 'deleted');
-  const total = active.length;
-  const used = active.filter(c => c.status === 'used').length;
-  const unused = active.filter(c => c.status === 'unused').length;
-  const rate = total > 0 ? Math.round(used / total * 100) : 0;
-
-  document.getElementById('statTotal').textContent = total;
-  document.getElementById('statUsed').textContent = used;
-  document.getElementById('statUnused').textContent = unused;
-  document.getElementById('statRate').textContent = rate + '%';
-
-  VENDOR_LIST.forEach((v, i) => {
-    document.getElementById('stat' + i).textContent = active.filter(c => c.vendor === v).length;
-  });
+  document.getElementById('statTotal').textContent = active.length;
+  document.getElementById('statUsed').textContent = active.filter(c => c.status === 'used').length;
+  document.getElementById('statUnused').textContent = active.filter(c => c.status === 'unused').length;
+  document.getElementById('statRate').textContent = (active.length > 0 ? Math.round(active.filter(c => c.status === 'used').length / active.length * 100) : 0) + '%';
+  VENDOR_LIST.forEach((v, i) => { document.getElementById('stat' + i).textContent = active.filter(c => c.vendor === v).length; });
 }
 
 function renderTable() {
-  const filtered = currentTab === 'all'
-    ? coupons.filter(c => c.status !== 'deleted')
-    : coupons.filter(c => c.vendor === currentTab && c.status !== 'deleted');
-
+  const filtered = currentTab === 'all' ? coupons.filter(c => c.status !== 'deleted') : coupons.filter(c => c.vendor === currentTab && c.status !== 'deleted');
   document.getElementById('tableCount').textContent = filtered.length + ' 건';
-
   const tbody = document.getElementById('couponTableBody');
-  if (filtered.length === 0) {
-    tbody.innerHTML = '<tr class="empty-row"><td colspan="8">발급된 쿠폰이 없습니다</td></tr>';
-    return;
-  }
-
+  if (filtered.length === 0) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">발급된 쿠폰이 없습니다</td></tr>'; return; }
   const vendorColors = { '풍동':'v1', '닭동가리':'v2', '해방피플클럽':'v3', '수기소금':'v4', '눈을 담다':'v5', '정육회':'v6' };
-
   tbody.innerHTML = filtered.map(c => {
     const vClass = vendorColors[c.vendor] || '';
-    let statusHtml = '';
-    if (c.status === 'used') {
-      statusHtml = '<span class="status-badge status-used"><span class="dot dot-used"></span>사용완료</span>';
-    } else if (c.status === 'expired') {
-      statusHtml = '<span class="status-badge status-expired"><span class="dot dot-expired"></span>만료</span>';
-    } else {
-      statusHtml = '<span class="status-badge status-unused"><span class="dot dot-unused"></span>미사용</span>';
-    }
-    return `
-    <tr>
-      <td>
-        <div class="coupon-title-cell">${c.title}</div>
-        <div class="coupon-vendor-cell">${c.coupon_type}</div>
-      </td>
-      <td><span class="v-dot ${vClass}"></span>${c.vendor}</td>
-      <td>${statusHtml}</td>
-      <td><span class="mono">${c.issued_date || '-'}</span></td>
-      <td><span class="mono">${c.used_date || '-'}</span></td>
-      <td><span class="mono">${c.expire_date || '-'}</span></td>
-      <td>
-        <button class="btn-link" onclick='showExistingQr(${JSON.stringify(c.id)})'>QR/링크</button>
-      </td>
-      <td>
-        <button class="btn-del" onclick='deleteCoupon(${JSON.stringify(c.id)})'>삭제</button>
-      </td>
-    </tr>`;
+    const statusHtml = c.status === 'used' ? '<span class="status-badge status-used"><span class="dot dot-used"></span>사용완료</span>' : c.status === 'expired' ? '<span class="status-badge status-expired"><span class="dot dot-expired"></span>만료</span>' : '<span class="status-badge status-unused"><span class="dot dot-unused"></span>미사용</span>';
+    return `<tr><td><div class="coupon-title-cell">${c.title}</div><div class="coupon-vendor-cell">${c.coupon_type}</div></td><td><span class="v-dot ${vClass}"></span>${c.vendor}</td><td>${statusHtml}</td><td><span class="mono">${c.issued_date || '-'}</span></td><td><span class="mono">${c.used_date || '-'}</span></td><td><span class="mono">${c.expire_date || '-'}</span></td><td><button class="btn-link" onclick='showExistingQr(${JSON.stringify(c.id)})'>QR/링크</button></td><td><button class="btn-del" onclick='deleteCoupon(${JSON.stringify(c.id)})'>삭제</button></td></tr>`;
   }).join('');
 }
 
 function switchTab(tab, el) {
   currentTab = tab;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); el.classList.add('active');
   const titles = { all:'전체 쿠폰 내역', '풍동':'풍동 쿠폰', '닭동가리':'닭동가리 쿠폰', '해방피플클럽':'해방피플클럽 쿠폰', '수기소금':'수기소금 쿠폰', '눈을 담다':'눈을 담다 쿠폰', '정육회':'정육회 쿠폰' };
   document.getElementById('tableTitle').textContent = titles[tab];
-  
-  // 탭이 바뀔 때 현장 배포 모드 버튼 텍스트 동적 수정
   const btnLive = document.querySelector('.btn-live-mode');
-  if(tab === 'all') {
-    btnLive.textContent = `📢 정육회 배포 모드 켜기`;
-  } else {
-    btnLive.textContent = `📢 ${tab} 배포 모드 켜기`;
-  }
-  
+  btnLive.textContent = tab === 'all' ? `📢 정육회 배포 모드 켜기` : `📢 ${tab} 배포 모드 켜기`;
   renderTable();
 }
 
-function showExistingQr(id) {
-  const c = coupons.find(c => c.id === id);
-  if (c) showQrModal(c);
-}
-
+function showExistingQr(id) { const c = coupons.find(c => c.id === id); if (c) showQrModal(c); }
 async function deleteCoupon(id) {
   if (!confirm('쿠폰을 삭제하시겠습니까?')) return;
-  try {
-    await dbDeleteCoupon(id);
-    coupons = coupons.filter(c => c.id !== id);
-    renderAll();
-    showToast('쿠폰이 삭제되었습니다');
-  } catch (e) {
-    showToast('❌ 삭제 실패: ' + e.message);
-  }
+  try { await dbDeleteCoupon(id); coupons = coupons.filter(c => c.id !== id); renderAll(); showToast('쿠폰이 삭제되었습니다'); } catch (e) { showToast('❌ 삭제 실패: ' + e.message); }
 }
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
 </script>
 </body>
 </html>
