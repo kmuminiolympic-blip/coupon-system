@@ -175,7 +175,7 @@
   }
   .tab.active { background: var(--surface3); color: var(--text); font-weight: 700; }
 
-  /* 컴팩트 조율 테이블 */
+  /* 컴팩트 테이블 기본 구조 */
   .table-wrap {
     background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
     overflow: hidden; margin-bottom: 16px;
@@ -191,8 +191,12 @@
   .status-unused { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
   .status-used   { background: rgba(45,212,191,0.12); color: #2dd4bf; border: 1px solid rgba(45,212,191,0.2); }
 
+  .btn-link { background: var(--surface3); border: 1px solid var(--border2); color: var(--accent2); border-radius: 4px; padding: 3px 8px; font-size: 11px; cursor: pointer; font-weight: 600; }
+  .btn-link:hover { background: var(--accent); color: white; }
   .btn-del { background: none; border: 1px solid rgba(248,113,113,0.2); color: #f87171; border-radius: 4px; padding: 3px 8px; font-size: 11px; cursor: pointer; }
   .btn-del:hover { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.4); }
+
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
 
   /* 10개 묶음 페이징 */
   .pagination { display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 24px; }
@@ -220,23 +224,6 @@
   .coupon-count-info { font-size: 11px; color: var(--text3); background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius2); padding: 6px 10px; margin-top: 4px; }
   .coupon-count-info strong { color: var(--accent2); }
 
-  /* 📋 수정 전 양식: 이미지 기반 개별 한도 매핑 대시보드 구조화 */
-  .old-dashboard-container { display: flex; flex-direction: column; gap: 16px; }
-  .old-vendor-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
-  .old-vendor-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-  .old-item-rows { display: flex; flex-direction: column; gap: 14px; }
-  .old-item-row { display: flex; flex-direction: column; gap: 6px; background: var(--surface2); border: 1px solid var(--border); padding: 12px 16px; border-radius: var(--radius2); }
-  .old-item-meta { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-  .old-item-name { color: var(--text); font-weight: 500; }
-  .old-item-qty { font-family: 'JetBrains Mono', monospace; color: var(--text2); font-size: 12px; }
-  .old-item-qty strong { color: var(--gold); font-weight: 600; }
-  
-  .old-progress-container { height: 6px; background: rgba(255,255,255,0.04); border-radius: 3px; overflow: hidden; }
-  .old-progress-fill { height: 100%; width: 0%; border-radius: 3px; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-  .fill-hb { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
-  .fill-sk { background: linear-gradient(90deg, #f43f5e, #fb7185); }
-  .fill-ju { background: linear-gradient(90deg, #2dd4bf, #4ade80); }
-
   .v-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:6px; }
   .v1 { background: #f59e0b; }
   .v2 { background: #10b981; }
@@ -244,6 +231,18 @@
   .v4 { background: #f43f5e; }
   .v5 { background: #8b5cf6; }
   .v6 { background: #2dd4bf; }
+
+  /* 모달 레이아웃 */
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .modal.show { display: flex; }
+  .modal-content { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 400px; text-align: center; }
+  .modal-header { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+  .qr-box { background: white; padding: 16px; border-radius: 8px; display: inline-block; margin-bottom: 16px; }
+  .url-box { background: var(--surface2); border: 1px solid var(--border); padding: 10px; border-radius: 6px; font-size: 12px; color: var(--text2); word-break: break-all; margin-bottom: 16px; text-align: left; }
+  .modal-btns { display: flex; gap: 8px; }
+  .modal-btn { flex: 1; padding: 10px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; }
+  .modal-btn.primary { background: var(--accent); color: white; }
+  .modal-btn.secondary { background: var(--surface3); color: var(--text); }
 
   .toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface3); border: 1px solid var(--border2); border-radius: var(--radius2); padding: 10px 18px; font-size: 13px; z-index: 9999; color: var(--text); transform: translateY(10px); opacity: 0; transition: all 0.2s; pointer-events: none; }
   .toast.show { transform: translateY(0); opacity: 1; }
@@ -371,56 +370,40 @@
   </div>
 </div>
 
-<div class="section-title">외부 지정 업체별 세부 발행 한도 트래킹</div>
-<div class="old-dashboard-container">
-  
-  <div class="old-vendor-card">
-    <div class="old-vendor-title"><span class="v-dot v3"></span> 해방피플클럽 발급 현황</div>
-    <div class="old-item-rows">
-      <div class="old-item-row">
-        <div class="old-item-meta"><span class="old-item-name">5만원 쿠폰</span><span class="old-item-qty"><strong id="qtyHb0">0</strong> / 1 매</span></div>
-        <div class="old-progress-container"><div class="old-progress-fill fill-hb" id="barHb0"></div></div>
-      </div>
-      <div class="old-item-row">
-        <div class="old-item-meta"><span class="old-item-name">3만원 쿠폰</span><span class="old-item-qty"><strong id="qtyHb1">0</strong> / 2 매</span></div>
-        <div class="old-progress-container"><div class="old-progress-fill fill-hb" id="barHb1"></div></div>
-      </div>
-      <div class="old-item-row">
-        <div class="old-item-meta"><span class="old-item-name">1만원 쿠폰</span><span class="old-item-qty"><strong id="qtyHb2">0</strong> / 3 매</span></div>
-        <div class="old-progress-container"><div class="old-progress-fill fill-hb" id="barHb2"></div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="old-vendor-card">
-    <div class="old-vendor-title"><span class="v-dot v4"></span> 수기소금 발급 현황</div>
-    <div class="old-item-rows">
-      <div class="old-item-row">
-        <div class="old-item-meta"><span class="old-item-name">크림치즈 크래커 1개</span><span class="old-item-qty"><strong id="qtySk0">0</strong> / 6 매</span></div>
-        <div class="old-progress-container"><div class="old-progress-fill fill-sk" id="barSk0"></div></div>
-      </div>
-      <div class="old-item-row">
-        <div class="old-item-meta"><span class="old-item-name">팥빙수 1개</span><span class="old-item-qty"><strong id="qtySk1">0</strong> / 6 매</span></div>
-        <div class="old-progress-container"><div class="old-progress-fill fill-sk" id="barSk1"></div></div>
-      </div>
-      <div class="old-item-row">
-        <div class="old-item-meta"><span class="old-item-name">감자튀김</span><span class="old-item-qty"><strong id="qtySk2">0</strong> / 8 매</span></div>
-        <div class="old-progress-container"><div class="old-progress-fill fill-sk" id="barSk2"></div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="old-vendor-card">
-    <div class="old-vendor-title"><span class="v-dot v6"></span> 정육회 발급 현황</div>
-    <div class="old-item-rows">
-      <div class="old-item-row">
-        <div class="old-item-meta"><span class="old-item-name">돈까스 한장 서비스 쿠폰</span><span class="old-item-qty"><strong id="qtyJu0">0</strong> / 20 매</span></div>
-        <div class="old-progress-container"><div class="old-progress-fill fill-ju" id="barJu0"></div></div>
-      </div>
-    </div>
-  </div>
-
+<div class="section-title">📋 외부 지정 업체별 세부 발행 한도 트래킹 (해방피플클럽, 수기소금, 정육회)</div>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 15%;">제목</th>
+        <th style="width: 25%;">종류</th>
+        <th style="width: 10%;">상태</th>
+        <th style="width: 11%;">발급일</th>
+        <th style="width: 11%;">사용일</th>
+        <th style="width: 11%;">만료일</th>
+        <th style="width: 10%;">링크/QR</th>
+        <th style="width: 7%;">삭제</th>
+      </tr>
+    </thead>
+    <tbody id="externalTableBody">
+      <tr><td colspan="8" style="text-align:center; color:var(--text3); padding:30px;">지정 외부업체 로그 로드 중...</td></tr>
+    </tbody>
+  </table>
 </div>
+
+<div class="modal" id="qrModal">
+  <div class="modal-content">
+    <div class="modal-header" id="modalTitle">쿠폰 정보 명세</div>
+    <div class="qr-box" id="qrContainer"></div>
+    <div class="url-box" id="modalUrl">-</div>
+    <div class="modal-btns">
+      <button class="modal-btn primary" onclick="copyUrl()">URL 주소 복사</button>
+      <button class="modal-btn secondary" onclick="closeModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 const SUPABASE_URL = 'https://scanpvkimaicpergakbe.supabase.co';
@@ -445,11 +428,13 @@ const VENDORS = {
 };
 
 const LOOP_VENDORS = ['풍동', '닭동가리', '눈을 담다'];
+const EXTERNAL_VENDORS = ['해방피플클럽', '수기소금', '정육회'];
 
 let coupons = [];
 let liveActiveCoupons = [];
 let liveCurrentIdx = 0;
 let liveWindow = null;
+let currentUrl = '';
 
 let currentTab = 'live'; 
 let currentPage = 1;
@@ -487,8 +472,8 @@ function setDbStatus(ok) {
 
 function renderAll() {
   updateDashboardStats();
-  updateImageStyleDashboard();
   renderTableData();
+  renderExternalTableData();
 }
 
 function updateDashboardStats() {
@@ -501,35 +486,6 @@ function updateDashboardStats() {
   document.getElementById('cntDg').innerHTML = `${dCount} <span>/ 130</span>`;
   document.getElementById('cntNd').innerHTML = `${nCount} <span>/ 80</span>`;
   document.getElementById('txtTotal').textContent = `총 발급수: ${pCount + dCount + nCount} / 310매`;
-}
-
-// 📊 이미지 요구사항에 매칭되는 독립 컴포넌트형 프로그레스 핸들러 연동 시스템
-function updateImageStyleDashboard() {
-  const active = coupons.filter(c => c.status !== 'deleted');
-
-  // 1. 해방피플클럽 개별 종류 연동
-  const hbList = active.filter(c => c.vendor === '해방피플클럽');
-  VENDORS['해방피플클럽'].types.forEach((t, i) => {
-    const count = hbList.filter(c => c.coupon_type === t.name).length;
-    document.getElementById(`qtyHb${i}`).textContent = count;
-    document.getElementById(`barHb${i}`).style.width = `${Math.min(100, (count / t.limit) * 100)}%`;
-  });
-
-  // 2. 수기소금 개별 종류 연동
-  const skList = active.filter(c => c.vendor === '수기소금');
-  VENDORS['수기소금'].types.forEach((t, i) => {
-    const count = skList.filter(c => c.coupon_type === t.name).length;
-    document.getElementById(`qtySk${i}`).textContent = count;
-    document.getElementById(`barSk${i}`).style.width = `${Math.min(100, (count / t.limit) * 100)}%`;
-  });
-
-  // 3. 정육회 개별 종류 연동
-  const juList = active.filter(c => c.vendor === '정육회');
-  VENDORS['정육회'].types.forEach((t, i) => {
-    const count = juList.filter(c => c.coupon_type === t.name).length;
-    document.getElementById(`qtyJu${i}`).textContent = count;
-    document.getElementById(`barJu${i}`).style.width = `${Math.min(100, (count / t.limit) * 100)}%`;
-  });
 }
 
 function getFilteredDataset() {
@@ -573,6 +529,60 @@ function renderTableData() {
     `;
   }).join('');
 }
+
+// 📋 외부업체 트래킹 테이블 렌더러 함수 (제목, 종류, 상태, 발급일, 사용일, 만료일, 링크/QR, 삭제)
+function renderExternalTableData() {
+  const extDataset = coupons.filter(c => EXTERNAL_VENDORS.includes(c.vendor) && c.status !== 'deleted');
+  const tbody = document.getElementById('externalTableBody');
+
+  if (extDataset.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text3); padding:40px;">조회할 수 있는 외부 지정 업체 내역이 없습니다.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = extDataset.map(c => {
+    const statusHtml = c.status === 'used' 
+      ? '<span class="status-badge status-used">사용완료</span>' 
+      : '<span class="status-badge status-unused">미사용</span>';
+    
+    return `
+      <tr>
+        <td><span class="title-cell">[${c.vendor}] ${c.title}</span></td>
+        <td style="font-size:12px; color:var(--text2);">${c.coupon_type}</td>
+        <td>${statusHtml}</td>
+        <td><span class="mono">${c.issued_date || '-'}</span></td>
+        <td><span class="mono">${c.used_date || '-'}</span></td>
+        <td><span class="mono">${c.expire_date || '-'}</span></td>
+        <td><button class="btn-link" onclick='showExistingQr(${JSON.stringify(c.id)})'>QR/링크</button></td>
+        <td><button class="btn-del" onclick='deleteCoupon(${JSON.stringify(c.id)})'>삭제</button></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function showExistingQr(id) {
+  const c = coupons.find(coupon => coupon.id === id);
+  if (c) {
+    currentUrl = c.url;
+    document.getElementById('modalTitle').textContent = `[${c.vendor}] ${c.title}`;
+    document.getElementById('modalUrl').textContent = c.url;
+    
+    const container = document.getElementById('qrContainer');
+    container.innerHTML = '';
+    new QRCode(container, {
+      text: c.url,
+      width: 180,
+      height: 180,
+      colorDark: '#0a0a0f',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    document.getElementById('qrModal').classList.add('show');
+  }
+}
+
+function closeModal() { document.getElementById('qrModal').classList.remove('show'); }
+function copyUrl() { navigator.clipboard.writeText(currentUrl).then(() => showToast('URL 주소가 클립보드에 복사되었습니다.')); }
 
 function switchTab(tab, el) {
   currentTab = tab;
@@ -743,12 +753,12 @@ function refreshLiveModeData() {
 }
 
 async function deleteCoupon(id) {
-  if (!confirm('현장 긴급 취소 처리: 해당 일련번호 쿠폰을 완전 파기(삭제)하시겠습니까?')) return;
+  if (!confirm('해당 일련번호 쿠폰을 시스템에서 완전히 삭제(파기)하시겠습니까?')) return;
   try {
     await sbFetch(`${TABLE}?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'deleted' }) });
-    showToast('선택 쿠폰 로그 영구 소멸 완료');
+    showToast('선택 쿠폰이 안전하게 삭제되었습니다.');
     await loadCoupons();
-  } catch (e) { showToast('삭제 처리 롤백됨'); }
+  } catch (e) { showToast('삭제 처리 원격 롤백됨'); }
 }
 
 function showToast(msg) {
