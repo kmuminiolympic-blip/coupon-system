@@ -220,20 +220,22 @@
   .coupon-count-info { font-size: 11px; color: var(--text3); background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius2); padding: 6px 10px; margin-top: 4px; }
   .coupon-count-info strong { color: var(--accent2); }
 
-  /* 수정 전 원본 형식의 대시보드 리스트 스타일 */
-  .old-style-list { display: flex; flex-direction: column; gap: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
-  .old-vendor-row { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius2); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-  .old-vendor-meta { display: flex; justify-content: space-between; align-items: center; }
-  .old-vendor-name { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; }
-  .old-vendor-qty { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text2); }
-  .old-vendor-qty strong { color: var(--gold); }
-  .old-progress-bg { height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
-  .old-progress-bar { height: 100%; width: 0%; border-radius: 3px; transition: width 0.4s ease; }
-  .old-progress-bar.hb { background: #3b82f6; }
-  .old-progress-bar.sk { background: #f43f5e; }
-  .old-progress-bar.ju { background: #2dd4bf; }
-  .old-type-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-  .old-type-tag { font-size: 11px; background: var(--surface3); border: 1px solid var(--border2); padding: 2px 8px; border-radius: 4px; color: var(--text2); }
+  /* 📋 수정 전 양식: 이미지 기반 개별 한도 매핑 대시보드 구조화 */
+  .old-dashboard-container { display: flex; flex-direction: column; gap: 16px; }
+  .old-vendor-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .old-vendor-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .old-item-rows { display: flex; flex-direction: column; gap: 14px; }
+  .old-item-row { display: flex; flex-direction: column; gap: 6px; background: var(--surface2); border: 1px solid var(--border); padding: 12px 16px; border-radius: var(--radius2); }
+  .old-item-meta { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+  .old-item-name { color: var(--text); font-weight: 500; }
+  .old-item-qty { font-family: 'JetBrains Mono', monospace; color: var(--text2); font-size: 12px; }
+  .old-item-qty strong { color: var(--gold); font-weight: 600; }
+  
+  .old-progress-container { height: 6px; background: rgba(255,255,255,0.04); border-radius: 3px; overflow: hidden; }
+  .old-progress-fill { height: 100%; width: 0%; border-radius: 3px; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  .fill-hb { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+  .fill-sk { background: linear-gradient(90deg, #f43f5e, #fb7185); }
+  .fill-ju { background: linear-gradient(90deg, #2dd4bf, #4ade80); }
 
   .v-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:6px; }
   .v1 { background: #f59e0b; }
@@ -369,44 +371,55 @@
   </div>
 </div>
 
-<div class="section-title">기타 업체 발급 현황 (수정 전 원본 포맷)</div>
-<div class="old-style-list">
-  <div class="old-vendor-row">
-    <div class="old-vendor-meta">
-      <div class="old-vendor-name"><span class="v-dot var--accent" style="background:#3b82f6;"></span> 해방피플클럽</div>
-      <div class="old-vendor-qty"><span id="qtyHb">0</span> / 6 매</div>
-    </div>
-    <div class="old-progress-bg"><div class="old-progress-bar hb" id="barHb"></div></div>
-    <div class="old-type-tags">
-      <div class="old-type-tag" id="tagHb0">5만원 쿠폰: 0/1</div>
-      <div class="old-type-tag" id="tagHb1">3만원 쿠폰: 0/2</div>
-      <div class="old-type-tag" id="tagHb2">1만원 쿠폰: 0/3</div>
-    </div>
-  </div>
-
-  <div class="old-vendor-row">
-    <div class="old-vendor-meta">
-      <div class="old-vendor-name"><span class="v-dot var--accent" style="background:#f43f5e;"></span> 수기소금</div>
-      <div class="old-vendor-qty"><span id="qtySk">0</span> / 20 매</div>
-    </div>
-    <div class="old-progress-bg"><div class="old-progress-bar sk" id="barSk"></div></div>
-    <div class="old-type-tags">
-      <div class="old-type-tag" id="tagSk0">크림치즈 크래커 1개: 0/6</div>
-      <div class="old-type-tag" id="tagSk1">팥빙수 1개: 0/6</div>
-      <div class="old-type-tag" id="tagSk2">감자튀김: 0/8</div>
+<div class="section-title">외부 지정 업체별 세부 발행 한도 트래킹</div>
+<div class="old-dashboard-container">
+  
+  <div class="old-vendor-card">
+    <div class="old-vendor-title"><span class="v-dot v3"></span> 해방피플클럽 발급 현황</div>
+    <div class="old-item-rows">
+      <div class="old-item-row">
+        <div class="old-item-meta"><span class="old-item-name">5만원 쿠폰</span><span class="old-item-qty"><strong id="qtyHb0">0</strong> / 1 매</span></div>
+        <div class="old-progress-container"><div class="old-progress-fill fill-hb" id="barHb0"></div></div>
+      </div>
+      <div class="old-item-row">
+        <div class="old-item-meta"><span class="old-item-name">3만원 쿠폰</span><span class="old-item-qty"><strong id="qtyHb1">0</strong> / 2 매</span></div>
+        <div class="old-progress-container"><div class="old-progress-fill fill-hb" id="barHb1"></div></div>
+      </div>
+      <div class="old-item-row">
+        <div class="old-item-meta"><span class="old-item-name">1만원 쿠폰</span><span class="old-item-qty"><strong id="qtyHb2">0</strong> / 3 매</span></div>
+        <div class="old-progress-container"><div class="old-progress-fill fill-hb" id="barHb2"></div></div>
+      </div>
     </div>
   </div>
 
-  <div class="old-vendor-row">
-    <div class="old-vendor-meta">
-      <div class="old-vendor-name"><span class="v-dot var--accent" style="background:#2dd4bf;"></span> 정육회</div>
-      <div class="old-vendor-qty"><span id="qtyJu">0</span> / 20 매</div>
-    </div>
-    <div class="old-progress-bg"><div class="old-progress-bar ju" id="barJu"></div></div>
-    <div class="old-type-tags">
-      <div class="old-type-tag" id="tagJu0">돈까스 한장 서비스 쿠폰: 0/20</div>
+  <div class="old-vendor-card">
+    <div class="old-vendor-title"><span class="v-dot v4"></span> 수기소금 발급 현황</div>
+    <div class="old-item-rows">
+      <div class="old-item-row">
+        <div class="old-item-meta"><span class="old-item-name">크림치즈 크래커 1개</span><span class="old-item-qty"><strong id="qtySk0">0</strong> / 6 매</span></div>
+        <div class="old-progress-container"><div class="old-progress-fill fill-sk" id="barSk0"></div></div>
+      </div>
+      <div class="old-item-row">
+        <div class="old-item-meta"><span class="old-item-name">팥빙수 1개</span><span class="old-item-qty"><strong id="qtySk1">0</strong> / 6 매</span></div>
+        <div class="old-progress-container"><div class="old-progress-fill fill-sk" id="barSk1"></div></div>
+      </div>
+      <div class="old-item-row">
+        <div class="old-item-meta"><span class="old-item-name">감자튀김</span><span class="old-item-qty"><strong id="qtySk2">0</strong> / 8 매</span></div>
+        <div class="old-progress-container"><div class="old-progress-fill fill-sk" id="barSk2"></div></div>
+      </div>
     </div>
   </div>
+
+  <div class="old-vendor-card">
+    <div class="old-vendor-title"><span class="v-dot v6"></span> 정육회 발급 현황</div>
+    <div class="old-item-rows">
+      <div class="old-item-row">
+        <div class="old-item-meta"><span class="old-item-name">돈까스 한장 서비스 쿠폰</span><span class="old-item-qty"><strong id="qtyJu0">0</strong> / 20 매</span></div>
+        <div class="old-progress-container"><div class="old-progress-fill fill-ju" id="barJu0"></div></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -474,7 +487,7 @@ function setDbStatus(ok) {
 
 function renderAll() {
   updateDashboardStats();
-  updateOldStyleDashboard();
+  updateImageStyleDashboard();
   renderTableData();
 }
 
@@ -490,35 +503,32 @@ function updateDashboardStats() {
   document.getElementById('txtTotal').textContent = `총 발급수: ${pCount + dCount + nCount} / 310매`;
 }
 
-// 수정 전 구형 프로그레스 바 스타일의 서브 컴포넌트 갱신 시스템
-function updateOldStyleDashboard() {
+// 📊 이미지 요구사항에 매칭되는 독립 컴포넌트형 프로그레스 핸들러 연동 시스템
+function updateImageStyleDashboard() {
   const active = coupons.filter(c => c.status !== 'deleted');
 
-  // 1. 해방피플클럽 (한도 6매)
+  // 1. 해방피플클럽 개별 종류 연동
   const hbList = active.filter(c => c.vendor === '해방피플클럽');
-  document.getElementById('qtyHb').textContent = hbList.length;
-  document.getElementById('barHb').style.width = `${(hbList.length / 6) * 100}%`;
   VENDORS['해방피플클럽'].types.forEach((t, i) => {
-    const cnt = hbList.filter(c => c.coupon_type === t.name).length;
-    document.getElementById(`tagHb${i}`).textContent = `${t.name.trim()}: ${cnt}/${t.limit}`;
+    const count = hbList.filter(c => c.coupon_type === t.name).length;
+    document.getElementById(`qtyHb${i}`).textContent = count;
+    document.getElementById(`barHb${i}`).style.width = `${Math.min(100, (count / t.limit) * 100)}%`;
   });
 
-  // 2. 수기소금 (한도 20매)
+  // 2. 수기소금 개별 종류 연동
   const skList = active.filter(c => c.vendor === '수기소금');
-  document.getElementById('qtySk').textContent = skList.length;
-  document.getElementById('barSk').style.width = `${(skList.length / 20) * 100}%`;
   VENDORS['수기소금'].types.forEach((t, i) => {
-    const cnt = skList.filter(c => c.coupon_type === t.name).length;
-    document.getElementById(`tagSk${i}`).textContent = `${t.name.trim()}: ${cnt}/${t.limit}`;
+    const count = skList.filter(c => c.coupon_type === t.name).length;
+    document.getElementById(`qtySk${i}`).textContent = count;
+    document.getElementById(`barSk${i}`).style.width = `${Math.min(100, (count / t.limit) * 100)}%`;
   });
 
-  // 3. 정육회 (한도 20매)
+  // 3. 정육회 개별 종류 연동
   const juList = active.filter(c => c.vendor === '정육회');
-  document.getElementById('qtyJu').textContent = juList.length;
-  document.getElementById('barJu').style.width = `${(juList.length / 20) * 100}%`;
   VENDORS['정육회'].types.forEach((t, i) => {
-    const cnt = juList.filter(c => c.coupon_type === t.name).length;
-    document.getElementById(`tagJu${i}`).textContent = `${t.name.trim()}: ${cnt}/${t.limit}`;
+    const count = juList.filter(c => c.coupon_type === t.name).length;
+    document.getElementById(`qtyJu${i}`).textContent = count;
+    document.getElementById(`barJu${i}`).style.width = `${Math.min(100, (count / t.limit) * 100)}%`;
   });
 }
 
