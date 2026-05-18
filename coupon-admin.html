@@ -175,7 +175,7 @@
   }
   .tab.active { background: var(--surface3); color: var(--text); font-weight: 700; }
 
-  /* 컴팩트 테이블 기본 구조 */
+  /* 컴팩트 테이블 구조 */
   .table-wrap {
     background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
     overflow: hidden; margin-bottom: 16px;
@@ -186,7 +186,7 @@
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: rgba(124,106,240,0.03); }
   
-  .title-cell { font-weight: 700; color: var(--text); }
+  .title-cell { font-weight: 700; color: var(--text); display: inline-flex; align-items: center; }
   .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
   .status-unused { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
   .status-used   { background: rgba(45,212,191,0.12); color: #2dd4bf; border: 1px solid rgba(45,212,191,0.2); }
@@ -211,10 +211,10 @@
   .btn-quick { background: var(--surface3); border: 1px solid var(--border2); color: var(--text); padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; }
   .btn-quick:hover { border-color: var(--accent2); color: var(--accent2); }
 
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
   .form-group { display: flex; flex-direction: column; gap: 6px; }
   .form-label { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.8px; text-transform: uppercase; }
-  .form-input, .form-select { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius2); color: var(--text); padding: 10px 14px; font-size: 13px; outline: none; }
+  .form-input, .form-select { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius2); color: var(--text); padding: 10px 14px; font-size: 13px; outline: none; height: 42px; }
   .form-input:focus, .form-select:focus { border-color: var(--accent); }
   
   .btn-issue { background: linear-gradient(135deg, var(--accent), #9f7aea); color: white; border: none; border-radius: var(--radius2); padding: 10px 24px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
@@ -224,13 +224,18 @@
   .coupon-count-info { font-size: 11px; color: var(--text3); background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius2); padding: 6px 10px; margin-top: 4px; }
   .coupon-count-info strong { color: var(--accent2); }
 
-  .v-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:6px; }
+  /* 업체별 구분 컬러 서클 배지 정의 */
+  .v-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:8px; flex-shrink: 0; }
+  .v-dot.color-pd { background: #f59e0b; } /* 풍동: 오렌지 */
+  .v-dot.color-dg { background: #10b981; } /* 닭동가리: 민트그린 */
+  .v-dot.color-nd { background: #8b5cf6; } /* 눈을 담다: 퍼플 */
+  .v-dot.color-hb { background: #3b82f6; } /* 해방피플클럽: 블루 */
+  .v-dot.color-sk { background: #f43f5e; } /* 수기소금: 로즈핑크 */
+  .v-dot.color-ju { background: #2dd4bf; } /* 정육회: 아쿠아 */
+
   .v1 { background: #f59e0b; }
   .v2 { background: #10b981; }
-  .v3 { background: #3b82f6; }
-  .v4 { background: #f43f5e; }
   .v5 { background: #8b5cf6; }
-  .v6 { background: #2dd4bf; }
 
   /* 모달 레이아웃 */
   .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 20px; }
@@ -345,7 +350,7 @@
         <option value="">-- 업체 선택 --</option>
         <option value="풍동">풍동</option>
         <option value="닭동가리">닭동가리</option>
-        <option value="해방피플클럽">해방피플클럽</option>
+        <option value="해방피플클럽">해방피放클럽</option>
         <option value="수기소금">수기소금</option>
         <option value="눈을 담다">눈을 담다</option>
         <option value="정육회">정육회</option>
@@ -361,6 +366,10 @@
     <div class="form-group">
       <label class="form-label">쿠폰 제목 (자동 매핑)</label>
       <input class="form-input" id="couponTitle" placeholder="일련번호 자동 계산">
+    </div>
+    <div class="form-group">
+      <label class="form-label">발급일 지정</label>
+      <input class="form-input" type="date" id="issueDateInput">
     </div>
   </div>
   
@@ -419,12 +428,12 @@ async function sbFetch(path, options = {}) {
 }
 
 const VENDORS = {
-  '풍동': { types: [{ name: '1,000원할인    ', limit: 100 }] },
-  '닭동가리': { types: [{ name: '음료증정', limit: 130 }] },
-  '해방피플클럽': { types: [{ name: '5만원 쿠폰    ', limit: 1 }, { name: '3만원 쿠폰    ', limit: 2 }, { name: '1만원 쿠폰    ', limit: 3 }] },
-  '수기소금': { types: [{ name: '크림치즈 크래커 1개    ', limit: 6 }, { name: '팥빙수 1개    ', limit: 6 }, { name: '감자튀김', limit: 8 }] },
-  '눈을 담다': { types: [{ name: '아메리카노 1,000원 할인 / 요거트아이스크림 3,000원 할인 택  1    ', limit: 80 }] },
-  '정육회': { types: [{ name: '돈까스 한장 서비스 쿠폰', limit: 20 }] }
+  '풍동': { colorClass: 'color-pd', types: [{ name: '1,000원할인    ', limit: 100 }] },
+  '닭동가리': { colorClass: 'color-dg', types: [{ name: '음료증정', limit: 130 }] },
+  '해방피플클럽': { colorClass: 'color-hb', types: [{ name: '5만원 쿠폰    ', limit: 1 }, { name: '3만원 쿠폰    ', limit: 2 }, { name: '1만원 쿠폰    ', limit: 3 }] },
+  '수기소금': { colorClass: 'color-sk', types: [{ name: '크림치즈 크래커 1개    ', limit: 6 }, { name: '팥빙수 1개    ', limit: 6 }, { name: '감자튀김', limit: 8 }] },
+  '눈을 담다': { colorClass: 'color-nd', types: [{ name: '아메리카노 1,000원 할인 / 요거트아이스크림 3,000원 할인 택  1    ', limit: 80 }] },
+  '정육회': { colorClass: 'color-ju', types: [{ name: '돈까스 한장 서비스 쿠폰', limit: 20 }] }
 };
 
 const LOOP_VENDORS = ['풍동', '닭동가리', '눈을 담다'];
@@ -449,6 +458,11 @@ function checkPassword() {
 
 window.onload = async function() {
   if (sessionStorage.getItem('admin_auth') === '1') document.getElementById('pwScreen').classList.remove('show');
+  
+  // 📅 발급일 입력창 오늘 날짜로 초기 세팅
+  const todayStr = new Date().toISOString().split('T')[0];
+  document.getElementById('issueDateInput').value = todayStr;
+
   await loadCoupons();
   quickSelectVendor('풍동');
   setInterval(loadCoupons, 15000); 
@@ -519,9 +533,17 @@ function renderTableData() {
     const statusHtml = c.status === 'used' 
       ? '<span class="status-badge status-used">사용완료</span>' 
       : '<span class="status-badge status-unused">미사용</span>';
+    
+    // 🎨 업체별 고유 클래스 매핑
+    const colorClass = VENDORS[c.vendor] ? VENDORS[c.vendor].colorClass : 'color-pd';
+
     return `
       <tr>
-        <td><span class="title-cell">[${c.vendor}] ${c.title}</span></td>
+        <td>
+          <span class="title-cell">
+            <span class="v-dot ${colorClass}"></span>[${c.vendor}] ${c.title}
+          </span>
+        </td>
         <td style="font-size:12px; color:var(--text2);">${c.coupon_type}</td>
         <td>${statusHtml}</td>
         <td><button class="btn-del" onclick='deleteCoupon(${JSON.stringify(c.id)})'>파기</button></td>
@@ -530,7 +552,7 @@ function renderTableData() {
   }).join('');
 }
 
-// 📋 외부업체 트래킹 테이블 렌더러 함수 (제목, 종류, 상태, 발급일, 사용일, 만료일, 링크/QR, 삭제)
+// 📋 외부업체 트래킹 테이블 렌더러 함수
 function renderExternalTableData() {
   const extDataset = coupons.filter(c => EXTERNAL_VENDORS.includes(c.vendor) && c.status !== 'deleted');
   const tbody = document.getElementById('externalTableBody');
@@ -545,9 +567,16 @@ function renderExternalTableData() {
       ? '<span class="status-badge status-used">사용완료</span>' 
       : '<span class="status-badge status-unused">미사용</span>';
     
+    // 🎨 업체별 고유 클래스 매핑
+    const colorClass = VENDORS[c.vendor] ? VENDORS[c.vendor].colorClass : 'color-hb';
+    
     return `
       <tr>
-        <td><span class="title-cell">[${c.vendor}] ${c.title}</span></td>
+        <td>
+          <span class="title-cell">
+            <span class="v-dot ${colorClass}"></span>[${c.vendor}] ${c.title}
+          </span>
+        </td>
         <td style="font-size:12px; color:var(--text2);">${c.coupon_type}</td>
         <td>${statusHtml}</td>
         <td><span class="mono">${c.issued_date || '-'}</span></td>
@@ -624,16 +653,30 @@ function onTypeChange() {
 
 async function issueCoupon(isLoop = false) {
   const vendor = document.getElementById('vendorSelect').value; const typeIdx = document.getElementById('couponTypeSelect').value; const title = document.getElementById('couponTitle').value.trim();
-  if (!vendor || typeIdx === '' || !title) { showToast('입력 값을 매핑해 주세요.'); return; }
+  const targetDateInput = document.getElementById('issueDateInput').value;
+
+  if (!vendor || typeIdx === '' || !title || !targetDateInput) { showToast('입력 값을 빠짐없이 매핑해 주세요.'); return; }
   const typeData = VENDORS[vendor].types[typeIdx];
   
   const token = Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2,'0')).join('');
   const url = `${location.origin}/coupon-use.html?token=${token}`;
   
-  const today = new Date().toISOString().split('T')[0];
-  const expDate = new Date(); expDate.setDate(expDate.getDate() + 30);
+  // 📅 사용자가 설정한 발급일 기준으로 만료일(+30일) 자동 연산 처리
+  const chosenDate = new Date(targetDateInput);
+  const expDate = new Date(chosenDate); 
+  expDate.setDate(expDate.getDate() + 30);
 
-  const coupon = { token, title, vendor, coupon_type: typeData.name, status: 'unused', issued_date: today, expire_date: expDate.toISOString().split('T')[0], url };
+  const coupon = { 
+    token, 
+    title, 
+    vendor, 
+    coupon_type: typeData.name, 
+    status: 'unused', 
+    issued_date: targetDateInput, 
+    expire_date: expDate.toISOString().split('T')[0], 
+    url 
+  };
+  
   const btn = isLoop ? document.getElementById('issueLoopBtn') : document.getElementById('issueBtn'); btn.disabled = true;
 
   try {
