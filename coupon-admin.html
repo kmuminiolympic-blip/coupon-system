@@ -350,7 +350,7 @@
         <option value="">-- 업체 선택 --</option>
         <option value="풍동">풍동</option>
         <option value="닭동가리">닭동가리</option>
-        <option value="해방피플클럽">해방피放클럽</option>
+        <option value="해방피플클럽">해방피플클럽</option>
         <option value="수기소금">수기소금</option>
         <option value="눈을 담다">눈을 담다</option>
         <option value="정육회">정육회</option>
@@ -368,8 +368,8 @@
       <input class="form-input" id="couponTitle" placeholder="일련번호 자동 계산">
     </div>
     <div class="form-group">
-      <label class="form-label">발급일 지정</label>
-      <input class="form-input" type="date" id="issueDateInput">
+      <label class="form-label">만료일 지정</label>
+      <input class="form-input" type="date" id="expireDateInput">
     </div>
   </div>
   
@@ -459,9 +459,10 @@ function checkPassword() {
 window.onload = async function() {
   if (sessionStorage.getItem('admin_auth') === '1') document.getElementById('pwScreen').classList.remove('show');
   
-  // 📅 발급일 입력창 오늘 날짜로 초기 세팅
-  const todayStr = new Date().toISOString().split('T')[0];
-  document.getElementById('issueDateInput').value = todayStr;
+  // 📅 만료일 기본값을 오늘 기준 30일 뒤로 자동 세팅
+  const defaultExpDate = new Date();
+  defaultExpDate.setDate(defaultExpDate.getDate() + 30);
+  document.getElementById('expireDateInput').value = defaultExpDate.toISOString().split('T')[0];
 
   await loadCoupons();
   quickSelectVendor('풍동');
@@ -534,7 +535,6 @@ function renderTableData() {
       ? '<span class="status-badge status-used">사용완료</span>' 
       : '<span class="status-badge status-unused">미사용</span>';
     
-    // 🎨 업체별 고유 클래스 매핑
     const colorClass = VENDORS[c.vendor] ? VENDORS[c.vendor].colorClass : 'color-pd';
 
     return `
@@ -552,7 +552,6 @@ function renderTableData() {
   }).join('');
 }
 
-// 📋 외부업체 트래킹 테이블 렌더러 함수
 function renderExternalTableData() {
   const extDataset = coupons.filter(c => EXTERNAL_VENDORS.includes(c.vendor) && c.status !== 'deleted');
   const tbody = document.getElementById('externalTableBody');
@@ -567,7 +566,6 @@ function renderExternalTableData() {
       ? '<span class="status-badge status-used">사용완료</span>' 
       : '<span class="status-badge status-unused">미사용</span>';
     
-    // 🎨 업체별 고유 클래스 매핑
     const colorClass = VENDORS[c.vendor] ? VENDORS[c.vendor].colorClass : 'color-hb';
     
     return `
@@ -653,18 +651,16 @@ function onTypeChange() {
 
 async function issueCoupon(isLoop = false) {
   const vendor = document.getElementById('vendorSelect').value; const typeIdx = document.getElementById('couponTypeSelect').value; const title = document.getElementById('couponTitle').value.trim();
-  const targetDateInput = document.getElementById('issueDateInput').value;
+  const targetExpireInput = document.getElementById('expireDateInput').value;
 
-  if (!vendor || typeIdx === '' || !title || !targetDateInput) { showToast('입력 값을 빠짐없이 매핑해 주세요.'); return; }
+  if (!vendor || typeIdx === '' || !title || !targetExpireInput) { showToast('입력 값을 빠짐없이 매핑해 주세요.'); return; }
   const typeData = VENDORS[vendor].types[typeIdx];
   
   const token = Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2,'0')).join('');
   const url = `${location.origin}/coupon-use.html?token=${token}`;
   
-  // 📅 사용자가 설정한 발급일 기준으로 만료일(+30일) 자동 연산 처리
-  const chosenDate = new Date(targetDateInput);
-  const expDate = new Date(chosenDate); 
-  expDate.setDate(expDate.getDate() + 30);
+  // 📅 발급일은 오늘로 고정, 만료일은 선택 데이터 입력
+  const todayStr = new Date().toISOString().split('T')[0];
 
   const coupon = { 
     token, 
@@ -672,8 +668,8 @@ async function issueCoupon(isLoop = false) {
     vendor, 
     coupon_type: typeData.name, 
     status: 'unused', 
-    issued_date: targetDateInput, 
-    expire_date: expDate.toISOString().split('T')[0], 
+    issued_date: todayStr, 
+    expire_date: targetExpireInput, 
     url 
   };
   
