@@ -226,12 +226,12 @@
 
   /* 업체별 구분 컬러 서클 배지 정의 */
   .v-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:8px; flex-shrink: 0; }
-  .v-dot.color-pd { background: #f59e0b; } /* 풍동: 오렌지 */
-  .v-dot.color-dg { background: #10b981; } /* 닭동가리: 민트그린 */
-  .v-dot.color-nd { background: #8b5cf6; } /* 눈을 담다: 퍼플 */
-  .v-dot.color-hb { background: #3b82f6; } /* 해방피플클럽: 블루 */
-  .v-dot.color-sk { background: #f43f5e; } /* 수기소금: 로즈핑크 */
-  .v-dot.color-ju { background: #2dd4bf; } /* 정육회: 아쿠아 */
+  .v-dot.color-pd { background: #f9f9f9; } /* 풍동: 화이트 */
+  .v-dot.color-dg { background: #225ef5; } /* 닭동가리: 블루 */
+  .v-dot.color-nd { background: #6cd0f8; } /* 눈을 담다: 스카이블루 */
+  .v-dot.color-hb { background: #f258b7; } /* 해방피플클럽: 핑크 */
+  .v-dot.color-sk { background: #e6d2ac; } /* 수기소금: 우드 */
+  .v-dot.color-ju { background: #f25858; } /* 정육회: 레드 */
 
   .v1 { background: #f59e0b; }
   .v2 { background: #10b981; }
@@ -284,9 +284,9 @@
     <span style="font-family:'JetBrains Mono'; font-weight:700; color:var(--accent2);" id="txtTotal">총 발급수: 0 / 310매</span>
   </div>
   <div class="grid-stats">
-    <div class="card-stat pd"><div class="stat-lbl">🍊 풍동 배포 현황</div><div class="stat-val" id="cntPd">0 <span>/ 100</span></div></div>
-    <div class="card-stat dg"><div class="stat-lbl">🍏 닭동가리 배포 현황</div><div class="stat-val" id="cntDg">0 <span>/ 130</span></div></div>
-    <div class="card-stat nd"><div class="stat-lbl">🍇 눈을 담다 배포 현황</div><div class="stat-val" id="cntNd">0 <span>/ 80</span></div></div>
+    <div class="card-stat pd"><div class="stat-lbl"> 풍동 배포 현황</div><div class="stat-val" id="cntPd">0 <span>/ 100</span></div></div>
+    <div class="card-stat dg"><div class="stat-lbl"> 닭동가리 배포 현황</div><div class="stat-val" id="cntDg">0 <span>/ 130</span></div></div>
+    <div class="card-stat nd"><div class="stat-lbl"> 눈을 담다 배포 현황</div><div class="stat-val" id="cntNd">0 <span>/ 80</span></div></div>
   </div>
 </div>
 
@@ -432,7 +432,7 @@ const VENDORS = {
   '닭동가리': { colorClass: 'color-dg', types: [{ name: '음료증정', limit: 130 }] },
   '해방피플클럽': { colorClass: 'color-hb', types: [{ name: '5만원 쿠폰    ', limit: 1 }, { name: '3만원 쿠폰    ', limit: 2 }, { name: '1만원 쿠폰    ', limit: 3 }] },
   '수기소금': { colorClass: 'color-sk', types: [{ name: '크림치즈 크래커 1개    ', limit: 6 }, { name: '팥빙수 1개    ', limit: 6 }, { name: '감자튀김', limit: 8 }] },
-  '눈을 담다': { colorClass: 'color-nd', types: [{ name: '아메리카노 1,000원 할인 / 요거트아이스크림 3,000원 할인 택  1    ', limit: 80 }] },
+  '눈을 담다': { colorClass: 'color-nd', types: [{ name: '아메리카노 1,000원 할인권 / 요거트아이스크림 3,000원권 택  1    ', limit: 80 }] },
   '정육회': { colorClass: 'color-ju', types: [{ name: '돈까스 한장 서비스 쿠폰', limit: 20 }] }
 };
 
