@@ -482,8 +482,8 @@ async function loadCoupons() {
 }
 
 function setDbStatus(ok) {
-  const doc = document.getElementById('dbDot'); const label = document.getElementById('dbLabel');
-  doc.className = 'db-dot ' + (ok ? 'ok' : 'err'); label.textContent = ok ? 'Supabase 클라우드 실시간 동기화 가동중' : '동기화 통신 끊김';
+  const dot = document.getElementById('dbDot'); const label = document.getElementById('dbLabel');
+  dot.className = 'db-dot ' + (ok ? 'ok' : 'err'); label.textContent = ok ? 'Supabase 클라우드 실시간 동기화 가동중' : '동기화 통신 끊김';
 }
 
 function renderAll() {
@@ -537,7 +537,9 @@ function renderTableData() {
       : '<span class="status-badge status-unused">미사용</span>';
     
     const colorClass = VENDORS[c.vendor] ? VENDORS[c.vendor].colorClass : 'color-pd';
-    const rowNumber = startIdx + index + 1; // 10개 묶음 페이징을 고려한 고유 순번 계산
+    
+    // 데이터는 최신순(desc)이므로 전체 개수에서 차감하여 오래된 것부터 1번이 되도록 순번 계산
+    const rowNumber = dataset.length - (startIdx + index);
 
     return `
       <tr>
