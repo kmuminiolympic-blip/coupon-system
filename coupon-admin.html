@@ -202,7 +202,7 @@
   .page-info { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text3); }
 
   /* 발행 조작 모듈 */
-  .issue-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .issue-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 24px; }
   .quick-vendor-box { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; background: var(--surface2); padding: 12px; border-radius: var(--radius2); border: 1px solid var(--border); }
   .btn-quick { background: var(--surface3); border: 1px solid var(--border2); color: var(--text); padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; }
   .btn-quick:hover { border-color: var(--accent2); color: var(--accent2); }
@@ -219,6 +219,21 @@
   .btn-issue-loop { background: linear-gradient(135deg, #f59e0b, #d97706); }
   .coupon-count-info { font-size: 11px; color: var(--text3); background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius2); padding: 6px 10px; margin-top: 4px; }
   .coupon-count-info strong { color: var(--accent2); }
+
+  /* 수정 전 원본 형식의 대시보드 리스트 스타일 */
+  .old-style-list { display: flex; flex-direction: column; gap: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .old-vendor-row { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius2); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .old-vendor-meta { display: flex; justify-content: space-between; align-items: center; }
+  .old-vendor-name { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; }
+  .old-vendor-qty { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text2); }
+  .old-vendor-qty strong { color: var(--gold); }
+  .old-progress-bg { height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
+  .old-progress-bar { height: 100%; width: 0%; border-radius: 3px; transition: width 0.4s ease; }
+  .old-progress-bar.hb { background: #3b82f6; }
+  .old-progress-bar.sk { background: #f43f5e; }
+  .old-progress-bar.ju { background: #2dd4bf; }
+  .old-type-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .old-type-tag { font-size: 11px; background: var(--surface3); border: 1px solid var(--border2); padding: 2px 8px; border-radius: 4px; color: var(--text2); }
 
   .v-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:6px; }
   .v1 { background: #f59e0b; }
@@ -319,7 +334,7 @@
     <button class="btn-quick" onclick="quickSelectVendor('해방피플클럽')">🔵 해방피플클럽</button>
     <button class="btn-quick" onclick="quickSelectVendor('수기소금')">🔴 수기소금</button>
     <button class="btn-quick" onclick="quickSelectVendor('정육회')">🟢 정육회</button>
-    <span style="color:var(--text3); font-size:11px; align-self:center; margin-left:auto;">*풍동, 닭동가리, 눈을 담다는 하단 [자동 순환 발행] 사용 권장</span>
+    <span style="color:var(--text3); font-size:11px; align-self:center; margin-left:auto;">*풍동, 닭동가리, 눈을 담다는 자동 스케일러 연동 모듈</span>
   </div>
 
   <div class="form-grid">
@@ -354,7 +369,45 @@
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="section-title">기타 업체 발급 현황 (수정 전 원본 포맷)</div>
+<div class="old-style-list">
+  <div class="old-vendor-row">
+    <div class="old-vendor-meta">
+      <div class="old-vendor-name"><span class="v-dot var--accent" style="background:#3b82f6;"></span> 해방피플클럽</div>
+      <div class="old-vendor-qty"><span id="qtyHb">0</span> / 6 매</div>
+    </div>
+    <div class="old-progress-bg"><div class="old-progress-bar hb" id="barHb"></div></div>
+    <div class="old-type-tags">
+      <div class="old-type-tag" id="tagHb0">5만원 쿠폰: 0/1</div>
+      <div class="old-type-tag" id="tagHb1">3만원 쿠폰: 0/2</div>
+      <div class="old-type-tag" id="tagHb2">1만원 쿠폰: 0/3</div>
+    </div>
+  </div>
+
+  <div class="old-vendor-row">
+    <div class="old-vendor-meta">
+      <div class="old-vendor-name"><span class="v-dot var--accent" style="background:#f43f5e;"></span> 수기소금</div>
+      <div class="old-vendor-qty"><span id="qtySk">0</span> / 20 매</div>
+    </div>
+    <div class="old-progress-bg"><div class="old-progress-bar sk" id="barSk"></div></div>
+    <div class="old-type-tags">
+      <div class="old-type-tag" id="tagSk0">크림치즈 크래커 1개: 0/6</div>
+      <div class="old-type-tag" id="tagSk1">팥빙수 1개: 0/6</div>
+      <div class="old-type-tag" id="tagSk2">감자튀김: 0/8</div>
+    </div>
+  </div>
+
+  <div class="old-vendor-row">
+    <div class="old-vendor-meta">
+      <div class="old-vendor-name"><span class="v-dot var--accent" style="background:#2dd4bf;"></span> 정육회</div>
+      <div class="old-vendor-qty"><span id="qtyJu">0</span> / 20 매</div>
+    </div>
+    <div class="old-progress-bg"><div class="old-progress-bar ju" id="barJu"></div></div>
+    <div class="old-type-tags">
+      <div class="old-type-tag" id="tagJu0">돈까스 한장 서비스 쿠폰: 0/20</div>
+    </div>
+  </div>
+</div>
 
 <script>
 const SUPABASE_URL = 'https://scanpvkimaicpergakbe.supabase.co';
@@ -385,7 +438,6 @@ let liveActiveCoupons = [];
 let liveCurrentIdx = 0;
 let liveWindow = null;
 
-// 페이징 처리 시스템 엔지니어링 변수
 let currentTab = 'live'; 
 let currentPage = 1;
 const PAGE_SIZE = 10;
@@ -401,7 +453,7 @@ window.onload = async function() {
   if (sessionStorage.getItem('admin_auth') === '1') document.getElementById('pwScreen').classList.remove('show');
   await loadCoupons();
   quickSelectVendor('풍동');
-  setInterval(loadCoupons, 15000); // 15초 주기 백그라운드 실시간 동기화 인터벌
+  setInterval(loadCoupons, 15000); 
   setInterval(() => { if (liveWindow && liveWindow.closed) { liveWindow = null; document.getElementById('liveRemote').style.display = 'none'; } }, 1000);
 };
 
@@ -422,6 +474,7 @@ function setDbStatus(ok) {
 
 function renderAll() {
   updateDashboardStats();
+  updateOldStyleDashboard();
   renderTableData();
 }
 
@@ -437,7 +490,38 @@ function updateDashboardStats() {
   document.getElementById('txtTotal').textContent = `총 발급수: ${pCount + dCount + nCount} / 310매`;
 }
 
-// 조건부 필터링 데이터 서브셋 컴파일링
+// 수정 전 구형 프로그레스 바 스타일의 서브 컴포넌트 갱신 시스템
+function updateOldStyleDashboard() {
+  const active = coupons.filter(c => c.status !== 'deleted');
+
+  // 1. 해방피플클럽 (한도 6매)
+  const hbList = active.filter(c => c.vendor === '해방피플클럽');
+  document.getElementById('qtyHb').textContent = hbList.length;
+  document.getElementById('barHb').style.width = `${(hbList.length / 6) * 100}%`;
+  VENDORS['해방피플클럽'].types.forEach((t, i) => {
+    const cnt = hbList.filter(c => c.coupon_type === t.name).length;
+    document.getElementById(`tagHb${i}`).textContent = `${t.name.trim()}: ${cnt}/${t.limit}`;
+  });
+
+  // 2. 수기소금 (한도 20매)
+  const skList = active.filter(c => c.vendor === '수기소금');
+  document.getElementById('qtySk').textContent = skList.length;
+  document.getElementById('barSk').style.width = `${(skList.length / 20) * 100}%`;
+  VENDORS['수기소금'].types.forEach((t, i) => {
+    const cnt = skList.filter(c => c.coupon_type === t.name).length;
+    document.getElementById(`tagSk${i}`).textContent = `${t.name.trim()}: ${cnt}/${t.limit}`;
+  });
+
+  // 3. 정육회 (한도 20매)
+  const juList = active.filter(c => c.vendor === '정육회');
+  document.getElementById('qtyJu').textContent = juList.length;
+  document.getElementById('barJu').style.width = `${(juList.length / 20) * 100}%`;
+  VENDORS['정육회'].types.forEach((t, i) => {
+    const cnt = juList.filter(c => c.coupon_type === t.name).length;
+    document.getElementById(`tagJu${i}`).textContent = `${t.name.trim()}: ${cnt}/${t.limit}`;
+  });
+}
+
 function getFilteredDataset() {
   if (currentTab === 'live') {
     return coupons.filter(c => LOOP_VENDORS.includes(c.vendor) && c.status !== 'deleted');
@@ -446,7 +530,6 @@ function getFilteredDataset() {
   }
 }
 
-// 핵심 4대 정보 컴팩트 테이블 렌더러 + 페이징 시스템 융합
 function renderTableData() {
   const dataset = getFilteredDataset();
   const totalPages = Math.max(1, Math.ceil(dataset.length / PAGE_SIZE));
@@ -495,7 +578,6 @@ function movePage(direction) {
   renderTableData();
 }
 
-// 대화상자 수동 발급 관련 서브엔진 인터페이스
 function quickSelectVendor(vendorName) {
   const select = document.getElementById('vendorSelect'); select.value = vendorName; onVendorChange();
   const typeSelect = document.getElementById('couponTypeSelect'); if (typeSelect.options.length > 1) { typeSelect.value = "0"; onTypeChange(); }
@@ -535,7 +617,7 @@ async function issueCoupon(isLoop = false) {
   const btn = isLoop ? document.getElementById('issueLoopBtn') : document.getElementById('issueBtn'); btn.disabled = true;
 
   try {
-    const result = await sbFetch(TABLE, { method: 'POST', prefer: 'return=representation', body: JSON.stringify(coupon) });
+    await sbFetch(TABLE, { method: 'POST', prefer: 'return=representation', body: JSON.stringify(coupon) });
     showToast(`✅ [${vendor}] ${title} 트랜잭션 성공`);
     await loadCoupons();
     if (isLoop && LOOP_VENDORS.includes(vendor)) {
@@ -545,9 +627,6 @@ async function issueCoupon(isLoop = false) {
   } catch (e) { showToast('❌ 발행 처리 패킷 에러'); } finally { btn.disabled = false; }
 }
 
-// =========================================================================
-// 🖥 팝업 외부 모니터 송출 코어 프레임워크
-// =========================================================================
 function openLiveWindow() {
   if (currentTab === 'live') {
     liveActiveCoupons = coupons.filter(c => LOOP_VENDORS.includes(c.vendor) && c.status !== 'deleted').sort((a, b) => {
