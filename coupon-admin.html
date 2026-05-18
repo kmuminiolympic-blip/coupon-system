@@ -89,7 +89,7 @@
 
   .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(9, 1fr); /* 6개 업체 + 통계 3개 고려하여 9열 확장 */
     gap: 12px;
     margin-bottom: 32px;
   }
@@ -115,6 +115,7 @@
   .stat-card.v3::before { background: #3b82f6; }
   .stat-card.v4::before { background: #f43f5e; }
   .stat-card.v5::before { background: #8b5cf6; }
+  .stat-card.v6::before { background: #2dd4bf; }
   .stat-card.used::before { background: var(--teal); }
   .stat-card.unused::before { background: var(--coral); }
   .stat-card.rate::before { background: var(--gold); }
@@ -141,6 +142,7 @@
     padding: 4px;
     margin-bottom: 16px;
     width: fit-content;
+    flex-wrap: wrap;
   }
   .tab {
     padding: 8px 18px; border-radius: var(--radius2);
@@ -319,6 +321,7 @@
   .v3 { background: #3b82f6; }
   .v4 { background: #f43f5e; }
   .v5 { background: #8b5cf6; }
+  .v6 { background: #2dd4bf; }
 
   .empty-row td { text-align: center; color: var(--text3); padding: 40px; }
 
@@ -468,6 +471,10 @@
       <div class="stat-label"><span class="v-dot v5"></span>눈을 담다</div>
       <div class="stat-num" id="stat4">-</div>
     </div>
+    <div class="stat-card v6">
+      <div class="stat-label"><span class="v-dot v6"></span>정육회</div>
+      <div class="stat-num" id="stat5">-</div>
+    </div>
     <div class="stat-card used span1">
       <div class="stat-label">사용 완료</div>
       <div class="stat-num" id="statUsed">-</div>
@@ -493,6 +500,7 @@
     <button class="tab" onclick="switchTab('해방피플클럽', this)"><span class="v-dot v3"></span> 해방피플클럽</button>
     <button class="tab" onclick="switchTab('수기소금', this)"><span class="v-dot v4"></span> 수기소금</button>
     <button class="tab" onclick="switchTab('눈을 담다', this)"><span class="v-dot v5"></span> 눈을 담다</button>
+    <button class="tab" onclick="switchTab('정육회', this)"><span class="v-dot v6"></span> 정육회</button>
   </div>
 
   <div class="table-wrap">
@@ -531,6 +539,7 @@
           <option value="해방피플클럽">해방피플클럽</option>
           <option value="수기소금">수기소금</option>
           <option value="눈을 담다">눈을 담다</option>
+          <option value="정육회">정육회</option>
         </select>
       </div>
       <div class="form-group">
@@ -664,10 +673,15 @@ const VENDORS = {
   '눈을 담다': {
     color: '#8b5cf6',
     types: [{ name: '아메리카노 1,000원 할인 / 요거트아이스크림 3,000원 할인 택  1    ', limit: null }]
+  },
+  // 정육회 데이터 추가 (20장 제한 설정)
+  '정육회': {
+    color: '#2dd4bf',
+    types: [{ name: '돈까스 한장 서비스 쿠폰', limit: 20 }]
   }
 };
 
-const VENDOR_LIST = ['풍동', '닭동가리', '해방피플클럽', '수기소금', '눈을 담다'];
+const VENDOR_LIST = ['풍동', '닭동가리', '해방피플클럽', '수기소금', '눈을 담다', '정육회'];
 
 let coupons = [];
 let currentTab = 'all';
@@ -778,7 +792,6 @@ function onTypeChange() {
     countInfo.innerHTML = `발급 한도: <strong>제한 없음</strong> (발급됨: ${existing}매)`;
   }
 
-  // ✨ 수정된 부분: 업체명과 종류명을 생략하고 오직 카운팅 번호(#1, #2...)만 들어가도록 세팅
   const vendorCoupons = coupons.filter(c => c.vendor === vendor && c.coupon_type === typeData.name).length;
   document.getElementById('couponTitle').value = `#${vendorCoupons + 1}`;
 }
@@ -911,7 +924,7 @@ function renderTable() {
     return;
   }
 
-  const vendorColors = { '풍동':'v1', '닭동가리':'v2', '해방피플클럽':'v3', '수기소금':'v4', '눈을 담다':'v5' };
+  const vendorColors = { '풍동':'v1', '닭동가리':'v2', '해방피플클럽':'v3', '수기소금':'v4', '눈을 담다':'v5', '정육회':'v6' };
 
   tbody.innerHTML = filtered.map(c => {
     const vClass = vendorColors[c.vendor] || '';
@@ -948,7 +961,7 @@ function switchTab(tab, el) {
   currentTab = tab;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  const titles = { all:'전체 쿠폰 내역', '풍동':'풍동 쿠폰', '닭동가리':'닭동가리 쿠폰', '해방피플클럽':'해방피플클럽 쿠폰', '수기소금':'수기소금 쿠폰', '눈을 담다':'눈을 담다 쿠폰' };
+  const titles = { all:'전체 쿠폰 내역', '풍동':'풍동 쿠폰', '닭동가리':'닭동가리 쿠폰', '해방피플클럽':'해방피플클럽 쿠폰', '수기소금':'수기소금 쿠폰', '눈을 담다':'눈을 담다 쿠폰', '정육회':'정육회 쿠폰' };
   document.getElementById('tableTitle').textContent = titles[tab];
   renderTable();
 }
