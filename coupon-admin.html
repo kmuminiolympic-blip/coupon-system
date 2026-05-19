@@ -309,7 +309,7 @@
     <button class="tab" onclick="switchTab('닭동가리', this)" title="닭동가리">🔵 닭동가리</button>
     <button class="tab" onclick="switchTab('눈을 담다', this)" title="눈을 담다">Ⓜ️ 눈을 담다</button>
   </div>
-</div>>
+</div>
 
 <div class="table-wrap">
   <table>
@@ -664,8 +664,8 @@ async function issueCoupon(isLoop = false) {
   const token = Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2,'0')).join('');
   const url = `${location.origin}/coupon-use.html?token=${token}`;
   
-  // 📅 발급일은 오늘로 고정, 만료일은 선택 데이터 입력
-  const todayStr = new Date().toISOString().split('T')[0];
+  // 📅 요청에 따라 발급일을 2026년 5월 27일로 하드코딩(고정)
+  const todayStr = "2026-05-27";
 
   const coupon = { 
     token, 
