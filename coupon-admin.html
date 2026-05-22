@@ -657,24 +657,55 @@ function onTypeChange() {
 }
 
 async function issueCoupon(isLoop = false) {
-  const vendor = document.getElementById('vendorSelect').value; const typeIdx = document.getElementById('couponTypeSelect').value; const title = document.getElementById('couponTitle').value.trim();
+  let vendor = document.getElementById('vendorSelect').value; 
+  let typeIdx = document.getElementById('couponTypeSelect').value; 
+  let title = document.getElementById('couponTitle').value.trim();
   const targetExpireInput = document.getElementById('expireDateInput').value;
 
   if (!vendor || typeIdx === '' || !title || !targetExpireInput) { showToast('입력 값을 빠짐없이 매핑해 주세요.'); return; }
-  const typeData = VENDORS[vendor].types[typeIdx];
+  let typeData = VENDORS[vendor].types[typeIdx];
   
-  // 🛑 [한도 검증 가드] 현재까지 발급된 수량과 설정된 한도(Limit)를 비교하여 차단
-  const existingCount = coupons.filter(c => c.vendor === vendor && c.coupon_type === typeData.name && c.status !== 'deleted').length;
+  // 🛑 [1차 검증 가드] 선택된 업체가 이미 한도 초과 상태인지 확인
+  let existingCount = coupons.filter(c => c.vendor === vendor && c.coupon_type === typeData.name && c.status !== 'deleted').length;
   if (typeData.limit !== null && existingCount >= typeData.limit) {
-    showToast(`❌ [${vendor}] 해당 쿠폰은 발급 한도(${typeData.limit}매)를 초과하여 더 이상 발행할 수 없습니다.`);
-    return; // Supabase 서버로 패킷을 보내지 않고 여기서 즉시 프로세스 종료
+    
+    // 만약 '자동 순환 발행' 모드라면, 한도 찬 업체는 경고만 띄우고 바로 다음 업체로 패스 시도
+    if (isLoop && LOOP_VENDORS.includes(vendor)) {
+      showToast(`⚠ [${vendor}] 한도 도달! 다음 업체로 자동 스킵합니다.`);
+      
+      // 루프 대상(풍동, 닭동가리, 눈을 담다) 중에서 한도가 남은 업체를 찾음
+      let nextVendor = null;
+      let startIndex = LOOP_VENDORS.indexOf(vendor);
+      
+      for (let i = 1; i <= LOOP_VENDORS.length; i++) {
+        let testVendor = LOOP_VENDORS[(startIndex + i) % LOOP_VENDORS.length];
+        let testTypeData = VENDORS[testVendor].types[0]; // 자동 스케일러 대상은 타입이 1개씩임
+        let testCount = coupons.filter(c => c.vendor === testVendor && c.coupon_type === testTypeData.name && c.status !== 'deleted').length;
+        
+        if (testTypeData.limit === null || testCount < testTypeData.limit) {
+          nextVendor = testVendor;
+          break;
+        }
+      }
+      
+      if (nextVendor) {
+        quickSelectVendor(nextVendor);
+        // 다음 타자로 변경 후 0.1초 뒤 발행 함수 재귀 호출 (연쇄 스케일링 무한 동력)
+        setTimeout(() => issueCoupon(true), 100);
+      } else {
+        showToast('❌ [올스톱] 자동 스케일러 모든 업체의 발급 한도가 가득 찼습니다!');
+      }
+      return;
+    }
+
+    // 단독 발행일 때는 기존처럼 차단 메시지 출력
+    showToast(`❌ [${vendor}] 해당 쿠폰은 발급 한도(${typeData.limit}매)를 초과했습니다.`);
+    return;
   }
   
   const token = Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2,'0')).join('');
   const url = `${location.origin}/coupon-use.html?token=${token}`;
-  
-  // 📅 요청에 따라 발급일을 2026년 5월 27일로 하드코딩(고정)
-  const todayStr = "2026-05-27";
+  const todayStr = "2026-05-27"; // 발급일 2026년 5월 27일 하드코딩 고정
 
   const coupon = { 
     token, 
@@ -693,11 +724,36 @@ async function issueCoupon(isLoop = false) {
     await sbFetch(TABLE, { method: 'POST', prefer: 'return=representation', body: JSON.stringify(coupon) });
     showToast(`✅ [${vendor}] ${title} 트랜잭션 성공`);
     await loadCoupons();
+    
+    // 발급 성공 후 다음 순환 대상을 지정할 때도 한도가 찬 업체는 '제외(패스)'하는 로직 적용
     if (isLoop && LOOP_VENDORS.includes(vendor)) {
-      const nextIdx = (LOOP_VENDORS.indexOf(vendor) + 1) % LOOP_VENDORS.length;
-      quickSelectVendor(LOOP_VCOOKIES = LOOP_VENDORS[nextIdx]);
-    } else { onTypeChange(); }
-  } catch (e) { showToast('❌ 발행 처리 패킷 에러'); } finally { btn.disabled = false; }
+      let nextVendor = null;
+      let currIdx = LOOP_VENDORS.indexOf(vendor);
+      
+      for (let i = 1; i <= LOOP_VENDORS.length; i++) {
+        let testVendor = LOOP_VENDORS[(currIdx + i) % LOOP_VENDORS.length];
+        let testTypeData = VENDORS[testVendor].types[0];
+        let testCount = coupons.filter(c => c.vendor === testVendor && c.coupon_type === testTypeData.name && c.status !== 'deleted').length;
+        
+        if (testTypeData.limit === null || testCount < testTypeData.limit) {
+          nextVendor = testVendor;
+          break;
+        }
+      }
+      
+      if (nextVendor) {
+        quickSelectVendor(nextVendor);
+      } else {
+        showToast('🏁 자동 스케일러 대상 모든 업체의 한도가 가득 차 종료되었습니다.');
+      }
+    } else { 
+      onTypeChange(); 
+    }
+  } catch (e) { 
+    showToast('❌ 발행 처리 패킷 에러'); 
+  } finally { 
+    btn.disabled = false; 
+  }
 }
   
 function openLiveWindow() {
