@@ -538,7 +538,9 @@ function renderTableData() {
       : '<span class="status-badge status-unused">미사용</span>';
     
     const colorClass = VENDORS[c.vendor] ? VENDORS[c.vendor].colorClass : 'color-pd';
-    const rowNumber = startIdx + index + 1; // 10개 묶음 페이징을 고려한 고유 순번 계산
+    
+    // 🔥 수정된 부분: 오래된 것부터 1번이 되도록 전체 개수(dataset.length)에서 역순으로 번호 부여
+    const rowNumber = dataset.length - (startIdx + index);
 
     return `
       <tr>
