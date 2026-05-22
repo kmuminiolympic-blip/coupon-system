@@ -663,6 +663,13 @@ async function issueCoupon(isLoop = false) {
   if (!vendor || typeIdx === '' || !title || !targetExpireInput) { showToast('입력 값을 빠짐없이 매핑해 주세요.'); return; }
   const typeData = VENDORS[vendor].types[typeIdx];
   
+  // 🛑 [한도 검증 가드] 현재까지 발급된 수량과 설정된 한도(Limit)를 비교하여 차단
+  const existingCount = coupons.filter(c => c.vendor === vendor && c.coupon_type === typeData.name && c.status !== 'deleted').length;
+  if (typeData.limit !== null && existingCount >= typeData.limit) {
+    showToast(`❌ [${vendor}] 해당 쿠폰은 발급 한도(${typeData.limit}매)를 초과하여 더 이상 발행할 수 없습니다.`);
+    return; // Supabase 서버로 패킷을 보내지 않고 여기서 즉시 프로세스 종료
+  }
+  
   const token = Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2,'0')).join('');
   const url = `${location.origin}/coupon-use.html?token=${token}`;
   
@@ -688,11 +695,11 @@ async function issueCoupon(isLoop = false) {
     await loadCoupons();
     if (isLoop && LOOP_VENDORS.includes(vendor)) {
       const nextIdx = (LOOP_VENDORS.indexOf(vendor) + 1) % LOOP_VENDORS.length;
-      quickSelectVendor(LOOP_VENDORS[nextIdx]);
+      quickSelectVendor(LOOP_VCOOKIES = LOOP_VENDORS[nextIdx]);
     } else { onTypeChange(); }
   } catch (e) { showToast('❌ 발행 처리 패킷 에러'); } finally { btn.disabled = false; }
 }
-
+  
 function openLiveWindow() {
   if (currentTab === 'live') {
     liveActiveCoupons = coupons.filter(c => LOOP_VENDORS.includes(c.vendor) && c.status !== 'deleted').sort((a, b) => {
