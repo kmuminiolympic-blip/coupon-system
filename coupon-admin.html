@@ -140,6 +140,15 @@
     cursor: pointer; display: flex; align-items: center; gap: 6px;
   }
   .btn-live-mode:hover { opacity: 0.9; }
+  
+  /* 일괄 파기용 레드 스타일 버튼 */
+  .btn-bulk-delete {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: white; border: none; border-radius: var(--radius2);
+    padding: 12px 20px; font-size: 14px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+  }
+  .btn-bulk-delete:hover { opacity: 0.9; }
 
   .live-remote-box {
     display: none; align-items: center; gap: 12px;
@@ -292,7 +301,10 @@
 
 <div class="section-title">듀얼 디스플레이 송출 디바이스 파이프라인</div>
 <div class="control-panel">
-  <button class="btn-live-mode" onclick="openLiveWindow()">🖥 관람객용 외부 배포 스크린 열기</button>
+  <div style="display: flex; gap: 10px;">
+    <button class="btn-live-mode" onclick="openLiveWindow()">🖥 관람객용 외부 배포 스크린 열기</button>
+    <button class="btn-bulk-delete" onclick="deleteTenCoupons()">🗑 현재 탭 쿠폰 10개 일괄 파기</button>
+  </div>
   <div class="live-remote-box" id="liveRemote">
     <span style="font-size:12px; color:var(--gold); font-weight:600;">외부창 원격 제어 슬라이더:</span>
     <button class="remote-btn" id="rPrev" onclick="moveLiveSlide(-1)">◀ 이전 쿠폰</button>
@@ -539,7 +551,7 @@ function renderTableData() {
     
     const colorClass = VENDORS[c.vendor] ? VENDORS[c.vendor].colorClass : 'color-pd';
     
-    // 🔥 수정된 부분: 오래된 것부터 1번이 되도록 전체 개수(dataset.length)에서 역순으로 번호 부여
+    // 🔥 오래된 것부터 1번이 되도록 전체 개수(dataset.length)에서 역순으로 번호 부여
     const rowNumber = dataset.length - (startIdx + index);
 
     return `
@@ -781,7 +793,7 @@ function openLiveWindow() {
     <html>
     <head>
       <title>KMU 미니올림픽 현장 쿠폰 배포 스크린</title>
-      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght=700&family=JetBrains+Mono:wght=700&display=swap" rel="stylesheet">
       <style>
         body { background: #07070a; color: #e8e8f0; font-family: 'Noto Sans KR', sans-serif; text-align: center; padding: 40px 20px; margin:0; }
         .title { font-size: 18px; color: #6060a0; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 24px; }
@@ -868,6 +880,40 @@ async function deleteCoupon(id) {
     showToast('선택 쿠폰이 안전하게 삭제되었습니다.');
     await loadCoupons();
   } catch (e) { showToast('삭제 처리 원격 롤백됨'); }
+}
+
+// 🔥 [신규 추가] 현재 선택된 탭에서 가장 최근 발급된 쿠폰 10개 일괄 파기 함수
+async function deleteTenCoupons() {
+  const dataset = getFilteredDataset();
+  if (dataset.length === 0) {
+    showToast('⚠ 현재 파기할 수 있는 쿠폰이 없습니다.');
+    return;
+  }
+
+  // 데이터셋의 상위 10개(가장 최근 데이터 10개) 추출
+  const targets = dataset.slice(0, 10);
+  const targetIds = targets.map(c => c.id);
+  const tabName = currentTab === 'live' ? '통합 로그' : `[${currentTab}]`;
+
+  if (!confirm(`${tabName}의 최신 발급 쿠폰 ${targetIds.length}개를 일괄 파기(삭제)하시겠습니까?`)) return;
+
+  try {
+    setDbStatus(false);
+    const idFilter = `(${targetIds.join(',')})`;
+    
+    // Supabase의 "in" 필터를 활용해 단일 트랜잭션 패킷으로 배치 업데이트 진행
+    await sbFetch(`${TABLE}?id=in.${idFilter}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: 'deleted' })
+    });
+
+    showToast(`🗑 ${targetIds.length}개의 쿠폰이 성공적으로 파기되었습니다.`);
+    await loadCoupons();
+  } catch (e) {
+    showToast('❌ 일괄 삭제 처리 중 패킷 에러 발생');
+  } finally {
+    setDbStatus(true);
+  }
 }
 
 function showToast(msg) {
